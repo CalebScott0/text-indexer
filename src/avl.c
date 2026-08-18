@@ -10,25 +10,6 @@
 
 #define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
-struct location_list {
-    /* TODO: char *filenames; */
-    unsigned *lines;
-
-    size_t size;
-    size_t capacity;
-};
-
-struct t_node {
-    char *key;
-    struct location_list locations;
-
-    int height;     /* PERF: make this a one bit field that stores balance
-                        factor instead ? */
-
-    struct t_node *left;
-    struct t_node *right;
-};
-
 /*
  * create, and initialize a new tree node,
  * allocates memory for the node itself,
@@ -50,12 +31,35 @@ char *str_dup(const char *__s);
 /* return the height of the node */
 int get_height(struct t_node *__n);
 
-/* return the balance factor of the node to check balance */
+/* return the balance factor of the node */
 int balance_factor(struct t_node *__n);
 
+/* apply a left rotation to node, adjusts its height,
+ * returns the new subtree root (node->right) */
 struct t_node *left_rot(struct t_node *node);
+
+/* apply a right rotation to node, adjusts its height
+ * returns the new subtree root (node->left) */
 struct t_node *right_rot(struct t_node *node);
 
+struct location_list {
+    /* TODO: char *filenames; */
+    unsigned *lines;
+
+    size_t size;
+    size_t capacity;
+};
+
+struct t_node {
+    char *key;
+    struct location_list locations;
+
+    int height;     /* PERF: make this a one bit field that stores balance
+                        factor instead ? */
+
+    struct t_node *left;
+    struct t_node *right;
+};
 
 struct t_node *insert(struct t_node *node, const char *key, unsigned value)
 {
@@ -110,12 +114,12 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
         return left_rot(node);
     }
     /* Left-leaning, key < node->left means Right rotation */
-    else if (balance_factor > 1 && strcmp(key, node->right->key) < 0) 
+    else if (balance_factor > 1 && strcmp(key, node->left->key) < 0) 
     {
         return right_rot(node);
     }
-    /* Right-leaning, key > node->right means LeftRight rotation */
-    else if (balance_factor > 1 && strcmp(key, node->right->key) > 0)
+    /* Left-leaning, key > node->left means LeftRight rotation */
+    else if (balance_factor > 1 && strcmp(key, node->left->key) > 0)
     {
         node->left = left_rot(node->left);
         return right_rot(node);
@@ -124,6 +128,17 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
     node->height = 1 + MAX(get_height(node->left), get_height(node->right));
 
     return node;
+}
+
+void clear(struct t_node *node)
+{
+    if (node == NULL) return;
+    clear(node->left);
+    clear(node->right);
+
+    free(node->locations.lines);
+    free(node->key);
+    free(node);
 }
 
 struct t_node *left_rot(struct t_node *root)

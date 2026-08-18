@@ -11,4 +11,7 @@ typedef struct t_node t_node;
 /* insert: ... */ 
 t_node *insert(t_node *node, const char *key, unsigned value);
 
+/* free all allocated memory */
+void clear(t_node *node);
+
 #endif

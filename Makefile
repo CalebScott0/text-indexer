@@ -5,22 +5,20 @@ CFLAGS =  \
 	 -fno-omit-frame-pointer \
 	 -fsanitize=address,undefined \
 
-# TODO: cleaner file names with variables
+INCLUDE = ./include
+SRC = ./src
 
-alv.o: ./src/alv.c ./include/alv.h
-	$(CC) $(CFLAGS) -c $< -o $@
-	
-main.o: ./src/main.c ./include/alv.h
-	$(CC) $(CFLAGS) -c $< -o $@
+avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h
+	$(CC) $(CFLAGS) -c $<
 
-main: main.o alv.o
+main: avl.o $(SRC)/main.c 
 	$(CC) $(CFLAGS) $^ -o $@
 
 run_main: main
 	./$<
 
 clean:
-	rm -f *.o
+	rm -f *.o main
 
 .PHONY: clean run_main
 

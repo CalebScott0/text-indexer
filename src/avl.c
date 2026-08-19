@@ -10,26 +10,19 @@
 
 #define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
-/*
- * create, and initialize a new tree node,
+/* create, and initialize a new tree node,
  * allocates memory for the node itself,
  * as well as memory for the initial capacity of locations.lines,
- * return pointer to new allocated node, or NULL if failure
- */
+ * return pointer to new allocated node, or NULL if failure */
 struct t_node *create_node();
-/*
- * attempt to push avalue to the end of node's member location's lines
- * possibly resizes lines as well 
- */
-void push_back_line(struct t_node *node, unsigned value);
-/*
- * str_dup returns identical allocated duplicate of __s,
- * or NULL on failure
- */
-char *str_dup(const char *__s);
 
-/* return the height of the node */
-int get_height(struct t_node *__n);
+/* attempt to push a value to the end of node's member location's lines
+ * possibly resizes lines as well */
+void push_back_line(struct t_node *node, unsigned value);
+
+/* str_dup returns identical allocated duplicate of __s,
+ * or NULL on failure */
+char *str_dup(const char *__s);
 
 /* return the balance factor of the node */
 int balance_factor(struct t_node *__n);
@@ -42,24 +35,6 @@ struct t_node *left_rot(struct t_node *node);
  * returns the new subtree root (node->left) */
 struct t_node *right_rot(struct t_node *node);
 
-struct location_list {
-    /* TODO: char *filenames; */
-    unsigned *lines;
-
-    size_t size;
-    size_t capacity;
-};
-
-struct t_node {
-    char *key;
-    struct location_list locations;
-
-    int height;     /* PERF: make this a one bit field that stores balance
-                        factor instead ? */
-
-    struct t_node *left;
-    struct t_node *right;
-};
 
 struct t_node *insert(struct t_node *node, const char *key, unsigned value)
 {
@@ -73,7 +48,7 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
         return node;
     }
 
-    /* FIXME: to do iteratively, you would need probably a parent pointer
+    /* TODO: to do iteratively, you would need probably a parent pointer
      * to update the heights or bf of all ancestor nodes
      * recursively, if balanced correctly, still runs in logn,
      * 1,000,000 nodes is still only ~ 20 levels,
@@ -111,6 +86,8 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
     else if (balance_factor < -1 && strcmp(key, node->right->key) < 0)
     {
         node->right = right_rot(node->right);
+        /* this node never gets recalculated below these conditions, do that now */
+        node->right->height = 1 + MAX(get_height(node->right->left), get_height(node->right->right));
         return left_rot(node);
     }
     /* Left-leaning, key < node->left means Right rotation */
@@ -122,6 +99,8 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
     else if (balance_factor > 1 && strcmp(key, node->left->key) > 0)
     {
         node->left = left_rot(node->left);
+        /* this node never gets recalculated below these conditions, do that now */
+        node->left->height = 1 + MAX(get_height(node->left->left), get_height(node->left->right));
         return right_rot(node);
     }
 

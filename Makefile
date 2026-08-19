@@ -10,10 +10,10 @@ SRC = ./src
 TESTS = ./tests
 
 avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -O2 -c $<
 
 avl_test: $(TESTS)/avl_tests.c avl.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) -O2 $^ -o $@
 
 run_test_avl: avl_test
 	./$<

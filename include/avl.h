@@ -7,19 +7,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-
-/* TODO: make this name more generic? i.e. like just a vector or something
- * - Move struct definitions back to source file? (makes them opaque)
- *  - currently moved here for testing to make life easier */
-struct location_node {
-    char *filename;
-    unsigned *lines;
-
-    size_t size;
-    size_t capacity;
-
-    struct location_node *next;
-};
+#include "utils.h"
 
 struct tree_node {
     char *key;

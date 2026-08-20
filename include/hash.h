@@ -5,27 +5,18 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "utils.h"
 
-
-struct location_list {
-    /* TODO: char *filename;,
-     * implement multiple files after single file works on both data structures */
-    unsigned *lines;
-
-    size_t size;
-    size_t capacity;
-};
-
-struct node {
+struct hash_node {
     char *key;
-    struct location_list locations;
+    struct location_node *loc_list; /* list of locations key is found in */
 
-    struct node *next; /* pointer to next node in chain */
+    struct hash_node *next; /* pointer to next node in chain */
 };
 
 // TODO: REMBMER THE LOAD FACTOR!!!! For chaining.....
 struct hashtab {
-    struct node **table; /* dynamic array of pointers to nodes */
+    struct hash_node **table;    /* dynamic array of pointers to nodes */
 
     size_t table_sz;
     size_t table_cap;
@@ -36,7 +27,8 @@ struct hashtab {
  * returns a hashtab structure */
 struct hashtab create_tab();
 
-bool insert(struct hashtab *tab, char *key, unsigned val);
+/* ...... */
+bool insert(struct hashtab *tab, const char *file, const char *key, unsigned val);
 
 
 #endif

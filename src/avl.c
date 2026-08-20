@@ -1,6 +1,5 @@
 /* implementation of an AVL tree */
 
-#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -212,7 +211,7 @@ struct location_node *create_loc(const char *file, unsigned lineno)
     struct location_node *node = (struct location_node *) malloc(sizeof(struct location_node));
     if (node)
     {
-        node->filename = strdup(file);
+        node->filename = str_dup(file);
         node->next = NULL;
         node->size = 0;
         node->lines = (unsigned *) malloc(sizeof(unsigned) * (node->capacity = STARTCAP));

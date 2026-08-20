@@ -7,44 +7,36 @@
 #include <string.h>
 
 #include "../include/avl.h"
+#include "../include/avl_utils.h"
 
-#define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
+struct tree create_tree()
+{
+    struct tree ret = { .root = NULL };
+    return ret;
+}
 
-/* create, and initialize a new tree node,
- * allocates memory for the node itself,
- * as well as memory for the initial capacity of locations.lines,
- * return pointer to new allocated node, or NULL if failure */
-struct t_node *create_node();
+bool tree_insert(struct tree *t, const char *key, unsigned val)
+{
+    struct t_node *__insert(struct t_node *, const char *, unsigned, bool *);
+    bool is_insert = false;
+    t->root = __insert(t->root, key, val, &is_insert);
 
-/* attempt to push a value to the end of node's member location's lines
- * possibly resizes lines as well */
-void push_back_line(struct t_node *node, unsigned value);
+    return is_insert;
+}
 
-/* str_dup returns identical allocated duplicate of __s,
- * or NULL on failure */
-char *str_dup(const char *__s);
-
-/* return the balance factor of the node */
-int balance_factor(struct t_node *__n);
-
-/* apply a left rotation to node, adjusts its height,
- * returns the new subtree root (node->right) */
-struct t_node *left_rot(struct t_node *node);
-
-/* apply a right rotation to node, adjusts its height
- * returns the new subtree root (node->left) */
-struct t_node *right_rot(struct t_node *node);
-
-
-struct t_node *insert(struct t_node *node, const char *key, unsigned value)
+struct t_node *__insert(struct t_node *node, const char *key, unsigned value, bool *ins)
 {
     if (node == NULL)
     {
         node = create_node();
-        node->locations.lines[node->locations.size++] = value;
-
-        node->key = str_dup(key); /* TODO: error handling at all necessary ? */
-
+        if (node)
+        {
+            *ins = true;
+            node->locations.lines[node->locations.size++] = value;
+            /* TODO: this might just be ptr assignment,
+             * if allocate during the tokenization */
+            node->key = str_dup(key);
+        }
         return node;
     }
 
@@ -63,26 +55,24 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
     }
     else if (cond > 0) /* right */
     {
-        node->right = insert(node->right, key, value);
+        node->right = __insert(node->right, key, value, ins);
     }
     else    /* left */
     {
-        node->left = insert(node->left, key, value);
+        node->left = __insert(node->left, key, value, ins);
     }
 
     /* AVL tree is balanced if balance factor is {-1, 0, 1} 
      * we check each node on the backtrace - only nodes in the insert path can become unbalanced
-     * we can check the value of the key against node node key to
+     * we can check the value of the key against node key to
      * determine the rotations if unbalanced */
     int8_t balance_factor = get_height(node->left) - get_height(node->right);
 
-    /* Right-leaning, key > node->right means Left rotation, right right travel to inserst */
     if (balance_factor < -1 && strcmp(key, node->right->key) > 0) 
     {
         // returning the node returned by rotation functions assign it back up to its parent in back trace
         return left_rot(node);
     }
-    /* Right-leaning, key < node->right means RightLeft rotation */
     else if (balance_factor < -1 && strcmp(key, node->right->key) < 0)
     {
         node->right = right_rot(node->right);
@@ -90,12 +80,10 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
         node->right->height = 1 + MAX(get_height(node->right->left), get_height(node->right->right));
         return left_rot(node);
     }
-    /* Left-leaning, key < node->left means Right rotation */
     else if (balance_factor > 1 && strcmp(key, node->left->key) < 0) 
     {
         return right_rot(node);
     }
-    /* Left-leaning, key > node->left means LeftRight rotation */
     else if (balance_factor > 1 && strcmp(key, node->left->key) > 0)
     {
         node->left = left_rot(node->left);
@@ -109,11 +97,18 @@ struct t_node *insert(struct t_node *node, const char *key, unsigned value)
     return node;
 }
 
-void clear(struct t_node *node)
+
+void tree_clear(struct tree *t)
+{
+    void __clear(struct t_node *);
+    __clear(t->root);
+}
+
+void __clear(struct t_node *node)
 {
     if (node == NULL) return;
-    clear(node->left);
-    clear(node->right);
+    __clear(node->left);
+    __clear(node->right);
 
     free(node->locations.lines);
     free(node->key);
@@ -123,6 +118,7 @@ void clear(struct t_node *node)
 struct t_node *left_rot(struct t_node *root)
 {
     struct t_node *new_root = root->right;
+
     root->right = new_root->left;
     new_root->left = root;
     root->height -= 1;
@@ -153,7 +149,7 @@ void push_back_line(struct t_node *node, unsigned value)
 
     if (sz == cap)   /* resize */
     {
-        unsigned *new_lines = 
+        unsigned *new_lines =  /* TODO: error handling?, try out realloc! */
             (unsigned *) malloc(sizeof(unsigned) * (*cap << 1));
         for (size_t i = 0; i < *cap; ++i)
             new_lines[i] = plines[i];
@@ -174,7 +170,7 @@ struct t_node *create_node()
 {
     struct t_node *node = 
         (struct t_node *) malloc(sizeof(struct t_node));
-    if (node) /* TODO: error handling at all necessary ? */
+    if (node)
     {
         node->height = 0;
         node->key = NULL;

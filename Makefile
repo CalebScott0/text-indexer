@@ -9,16 +9,19 @@ INCLUDE = ./include
 SRC = ./src
 TESTS = ./tests
 
-avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h
-	$(CC) $(CFLAGS) -O2 -c $<
+avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h $(INCLUDE)/avl_utils.h
+	$(CC) $(CFLAGS) -c $<
+	
+hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h
+	$(CC) $(CFLAGS) -c $<
 
 avl_test: $(TESTS)/avl_tests.c avl.o
-	$(CC) $(CFLAGS) -O2 $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 run_test_avl: avl_test
 	./$<
 
-main: avl.o $(SRC)/main.c 
+main: hash.o avl.o $(SRC)/main.c 
 	$(CC) $(CFLAGS) $^ -o $@
 
 run_main: main

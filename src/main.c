@@ -2,16 +2,15 @@
 #include <stdlib.h>
 
 #include "../include/avl.h"
+#include "../include/hash.h"
 
 int main()
 {
-    /* initialize ptr to NULL */
-    t_node *tree = NULL;
-    tree = insert(tree, "hello", 1);
-    tree = insert(tree, "all", 2);
-    tree = insert(tree, "zebra", 9);
+    struct tree tree = create_tree();
+    tree_insert(&tree, "a", 1);
+    tree_insert(&tree, "b", 1);
+    tree_insert(&tree, "c", 1);
+    tree_insert(&tree, "d", 1);
 
-    printf("Hello\n");
-    
     return 0;
 }

@@ -1,16 +1,20 @@
 /* interface for an AVL tree,
- * each node stores a char * key, and a list of values */
-
-#include <stddef.h>
+ * each node stores a char * key, and a vector of locations the key appears,
+ * where a location is a filename, and the lines that the key appears in in that file */
 
 #ifndef AVL_H
 #define AVL_H
 
+#include <stddef.h>
+#include <stdbool.h>
+
+/* TODO: make a class called tree that houses the root of a tree ?? */
+
 /* TODO: make this name more generic? i.e. like just a vector or something
  * - Move struct definitions back to source file? (makes them opaque)
  *  - currently moved here for testing to make life easier */
-struct location_list {
-    /* TODO: char **filenames; */
+struct location_node {
+    /* TODO: char *filename; */
     unsigned *lines;
 
     size_t size;
@@ -19,31 +23,39 @@ struct location_list {
 
 struct t_node {
     char *key;
-    struct location_list locations;
+    /* TODO: with multiple files added in, this will have to be a vector,
+     * or you can make location_node a linked list
+     * for now get both working with just one file input */
+    struct location_node locations;
 
     int height;     /* PERF: make this a one bit field that stores balance
                         factor instead ? */
-
     struct t_node *left;
     struct t_node *right;
 };
 
-/* insert: If the key does not exist in node's tree, insert a new node,
+struct tree {
+    struct t_node *root;
+};
+
+/* create_tree: initialize an empty tree 
+ * TODO: other alternative is to create and pass by ptr for both this and hash*/
+ struct tree create_tree();
+
+/* tree_insert: If the key does not exist in node's tree, insert a new node,
  *         else possibly append value to the lines vector in locations
- *  - node:  root of the tree in which to attempt the insert
+ *  - tree: a tree structure
  *  - key:   c-string key to insert
  *  - value: value to possibly append to lines member in locations 
- *
- *  returns: pointer to node after insert operations
+ *  returns: true if and only if a new node was inserted
  */ 
-struct t_node *insert(struct t_node *node, const char *key, unsigned value);
+bool tree_insert(struct tree *t, const char *key, unsigned val);
+
+/* TODO: void *for get ? for fct pointer? 
+    get: needs to search for the key, and if found return a void ? pointer to lines, and the sz of lines?
+    other idea is return a pointer to the node, void? */
 
 /* free all allocated memory */
-void clear(struct t_node *node);
-
-/* return the height of the node */
- /* TODO: keep this here or move back to source file after tests ? */
-int get_height(struct t_node *__n);
-
+void tree_clear(struct tree *t);
 
 #endif

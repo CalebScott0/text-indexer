@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../include/avl.h"
+#include "../include/avl_utils.h"
 
 /* Functions to check structure
  * i.e. functions that run through the whole tree? 
@@ -20,9 +21,13 @@
  *
  * also have to check lines array.. 
  *  and that the lines array resizes properly with values and capacity
+ *  -> maybe use something like a to_string function!! also useful for the program...
  */
 
 /* TODO: ALSO USE THIS WITH REAL INPUT, i.e. stuff that isn't one character long */
+
+/* TODO: CHANGE TO MATCH NEW TOP LEVEL STRUCT FORMAT */
+
 bool avl_validate(struct t_node *root);
 bool test_is_bst();
 
@@ -82,14 +87,24 @@ int main()
     clear(root);
     root = NULL;
 
+    root = insert(root,"e", 12);
+    root = insert(root,"g", 12);
+    root = insert(root,"b", 12);
+    root = insert(root,"a", 12);
+    root = insert(root,"c", 12);
+    root = insert(root,"d", 12);
+    assert(avl_validate(root));
+    clear(root);
+    root = NULL;
 
+    /**/
 
     /*********************
      *  Chained Inserts  *
      *  i.e. one insert breaks, and keep inserting to more breaks, etc 
      *********************/
 
-    printf("✅ Passed");
+    printf("\n✅ Passed\n");
 
     return 0;
 }

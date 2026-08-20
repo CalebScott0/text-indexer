@@ -15,16 +15,20 @@ struct tree create_tree()
     return ret;
 }
 
-bool tree_insert(struct tree *t, const char *key, unsigned val)
+bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lineno)
 {
-    struct t_node *__insert(struct t_node *, const char *, unsigned, bool *);
+    struct tree_node *__insert(struct tree_node *, const char *, const char *, unsigned, bool *);
     bool is_insert = false;
-    t->root = __insert(t->root, key, val, &is_insert);
+    t->root = __insert(t->root, key, file, lineno, &is_insert);
 
     return is_insert;
 }
 
-struct t_node *__insert(struct t_node *node, const char *key, unsigned value, bool *ins)
+struct tree_node *__insert(struct tree_node *node,
+                        const char *key,
+                        const char *file,
+                        unsigned lineno,
+                        bool *ins)
 {
     if (node == NULL)
     {
@@ -32,9 +36,9 @@ struct t_node *__insert(struct t_node *node, const char *key, unsigned value, bo
         if (node)
         {
             *ins = true;
-            node->locations.lines[node->locations.size++] = value;
             /* TODO: this might just be ptr assignment,
              * if allocate during the tokenization */
+            node->loc_list = create_loc(file, lineno);
             node->key = str_dup(key);
         }
         return node;
@@ -49,17 +53,30 @@ struct t_node *__insert(struct t_node *node, const char *key, unsigned value, bo
     int cond;
     if ((cond = strcmp(key, node->key)) == 0)
     {
-        push_back_line(node, value);
+        /* files are processed sequentially, if we always make a new location_node
+         *  the head of the list, last file we found the key in will be the first
+         *  location_node in this current tree node */
+        if (strcmp(node->loc_list->filename, file) == 0)
+        {
+            push_back_line(node->loc_list, lineno);
+        }
+        else
+        {
+            struct location_node *new = create_loc(file, lineno);
+            /* make new the head of loc_list */
+            new->next = node->loc_list; 
+            node->loc_list = new;
+        }
         /* TODO: any value in returning node here ?
          * trace through execution quickly */
     }
     else if (cond > 0) /* right */
     {
-        node->right = __insert(node->right, key, value, ins);
+        node->right = __insert(node->right, key, file, lineno, ins);
     }
     else    /* left */
     {
-        node->left = __insert(node->left, key, value, ins);
+        node->left = __insert(node->left, key, file, lineno, ins);
     }
 
     /* AVL tree is balanced if balance factor is {-1, 0, 1} 
@@ -100,24 +117,24 @@ struct t_node *__insert(struct t_node *node, const char *key, unsigned value, bo
 
 void tree_clear(struct tree *t)
 {
-    void __clear(struct t_node *);
+    void __clear(struct tree_node *);
     __clear(t->root);
 }
 
-void __clear(struct t_node *node)
+void __clear(struct tree_node *node)
 {
     if (node == NULL) return;
     __clear(node->left);
     __clear(node->right);
 
-    free(node->locations.lines);
+    /* TODO: function to free node location list */
     free(node->key);
     free(node);
 }
 
-struct t_node *left_rot(struct t_node *root)
+struct tree_node *left_rot(struct tree_node *root)
 {
-    struct t_node *new_root = root->right;
+    struct tree_node *new_root = root->right;
 
     root->right = new_root->left;
     new_root->left = root;
@@ -126,9 +143,9 @@ struct t_node *left_rot(struct t_node *root)
     return new_root;
 }
 
-struct t_node *right_rot(struct t_node *root)
+struct tree_node *right_rot(struct tree_node *root)
 {
-    struct t_node *new_root = root->left;
+    struct tree_node *new_root = root->left;
 
     root->left = new_root->right;
     new_root->right = root;
@@ -137,15 +154,13 @@ struct t_node *right_rot(struct t_node *root)
     return new_root;
 }
 
-/* push_back_line: attempts to insert a new value to the end of the lines array in
- * the locations member struct of node */
-void push_back_line(struct t_node *node, unsigned value)
+void push_back_line(struct location_node *node, unsigned value)
 {
     if (node == NULL) return;
 
-    size_t *sz = &node->locations.size;
-    size_t *cap = &node->locations.capacity;
-    unsigned *plines = node->locations.lines;
+    size_t *sz = &node->size;
+    size_t *cap = &node->capacity;
+    unsigned *plines = node->lines;
 
     if (sz == cap)   /* resize */
     {
@@ -155,7 +170,7 @@ void push_back_line(struct t_node *node, unsigned value)
             new_lines[i] = plines[i];
 
         free(plines);
-        node->locations.lines = new_lines;
+        node->lines = new_lines;
         *cap <<= 1;
     }
 
@@ -164,22 +179,17 @@ void push_back_line(struct t_node *node, unsigned value)
         plines[(*sz)++] = value;
 }
 
-#define STARTCAP 10
 
-struct t_node *create_node()
+struct tree_node *create_node()
 {
-    struct t_node *node = 
-        (struct t_node *) malloc(sizeof(struct t_node));
+    struct tree_node *node = 
+        (struct tree_node *) malloc(sizeof(struct tree_node));
     if (node)
     {
         node->height = 0;
         node->key = NULL;
         node->left = node->right = NULL;
-        node->locations.lines = NULL;
-        node->locations.size = 0;
-        node->locations.capacity = STARTCAP;
-        node->locations.lines =
-            (unsigned *) malloc(sizeof(unsigned) * STARTCAP);
+        node->loc_list = NULL;
     }
     return node;
 }
@@ -192,7 +202,23 @@ char *str_dup(const char *__s)
     return w;
 }
 
-int get_height(struct t_node *__n)
+int get_height(struct tree_node *__n)
 {
     return (__n != NULL) ? __n->height : -1;
 }
+
+struct location_node *create_loc(const char *file, unsigned lineno)
+{
+    struct location_node *node = (struct location_node *) malloc(sizeof(struct location_node));
+    if (node)
+    {
+        node->filename = strdup(file);
+        node->next = NULL;
+        node->size = 0;
+        node->lines = (unsigned *) malloc(sizeof(unsigned) * (node->capacity = STARTCAP));
+        node->lines[node->size++] = lineno;
+    }
+    
+    return node;
+}
+

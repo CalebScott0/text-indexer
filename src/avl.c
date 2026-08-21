@@ -31,7 +31,7 @@ struct tree_node *__insert(struct tree_node *node,
 {
     if (node == NULL)
     {
-        node = create_node();
+        node = create_tree_node();
         if (node)
         {
             *ins = true;
@@ -78,6 +78,12 @@ struct tree_node *__insert(struct tree_node *node,
         node->left = __insert(node->left, key, file, lineno, ins);
     }
 
+    /* TODO: rebalance function that checks and maybe rotates to rebalance,
+     * would be something like:
+     * - struct tree_node *rebalance(struct tree_node *, key)
+     *   if you just return whatever this returns back up the backtrace,
+     *   that should work!? */
+
     /* AVL tree is balanced if balance factor is {-1, 0, 1} 
      * we check each node on the backtrace - only nodes in the insert path can become unbalanced
      * we can check the value of the key against node key to
@@ -113,7 +119,6 @@ struct tree_node *__insert(struct tree_node *node,
     return node;
 }
 
-
 void tree_clear(struct tree *t)
 {
     void __clear(struct tree_node *);
@@ -131,55 +136,7 @@ void __clear(struct tree_node *node)
     free(node);
 }
 
-struct tree_node *left_rot(struct tree_node *root)
-{
-    struct tree_node *new_root = root->right;
-
-    root->right = new_root->left;
-    new_root->left = root;
-    root->height -= 1;
-
-    return new_root;
-}
-
-struct tree_node *right_rot(struct tree_node *root)
-{
-    struct tree_node *new_root = root->left;
-
-    root->left = new_root->right;
-    new_root->right = root;
-    root->height -= 1;
-
-    return new_root;
-}
-
-void push_back_line(struct location_node *node, unsigned value)
-{
-    if (node == NULL) return;
-
-    size_t *sz = &node->size;
-    size_t *cap = &node->capacity;
-    unsigned *plines = node->lines;
-
-    if (sz == cap)   /* resize */
-    {
-        unsigned *new_lines =  /* TODO: error handling?, try out realloc! */
-            (unsigned *) malloc(sizeof(unsigned) * (*cap << 1));
-        for (size_t i = 0; i < *cap; ++i)
-            new_lines[i] = plines[i];
-
-        free(plines);
-        node->lines = new_lines;
-        *cap <<= 1;
-    }
-
-    /* we only want unique line numbers */
-    if (*sz > 0 && plines[*sz - 1] != value)
-        plines[(*sz)++] = value;
-}
-
-
-struct tree_node *create_node()
+struct tree_node *create_tree_node()
 {
     struct tree_node *node = 
         (struct tree_node *) malloc(sizeof(struct tree_node));
@@ -193,31 +150,7 @@ struct tree_node *create_node()
     return node;
 }
 
-char *str_dup(const char *__s)
-{
-    char *w = (char *) malloc(strlen(__s) + 1);
-    if (w)
-        strcpy(w, __s);
-    return w;
-}
-
 int get_height(struct tree_node *__n)
 {
     return (__n != NULL) ? __n->height : -1;
 }
-
-struct location_node *create_loc(const char *file, unsigned lineno)
-{
-    struct location_node *node = (struct location_node *) malloc(sizeof(struct location_node));
-    if (node)
-    {
-        node->filename = str_dup(file);
-        node->next = NULL;
-        node->size = 0;
-        node->lines = (unsigned *) malloc(sizeof(unsigned) * (node->capacity = STARTCAP));
-        node->lines[node->size++] = lineno;
-    }
-    
-    return node;
-}
-

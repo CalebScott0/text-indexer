@@ -28,7 +28,7 @@ struct hashtab {
 struct hashtab create_tab();
 
 /* ...... */
-bool insert(struct hashtab *tab, const char *file, const char *key, unsigned val);
+bool insert(struct hashtab *table, const char *file, const char *key, unsigned line);
 
 
 #endif

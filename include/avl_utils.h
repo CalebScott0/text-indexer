@@ -4,11 +4,9 @@
 
 #define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
-/* create, and initialize a new tree node,
- * allocates memory for the node itself,
- * as well as memory for the initial capacity of locations.lines,
- * return pointer to new allocated node, or NULL if failure */
-struct tree_node *create_node();
+/* Initialize a tree node. Allocates memory for a struct tree_node, and assigns default values to all members.
+ * returns pointer to allocated memory, or NULL if failure */
+struct tree_node *create_tree_node();
 
 /* return the balance factor of the node */
 int balance_factor(struct tree_node *__n);

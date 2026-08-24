@@ -67,7 +67,9 @@ void hash_resize(struct hashtab *table)
     for (int i = 0; i < table->table_cap << 1; ++i)
         new_table[i] = NULL;
 
-    for (int i = 0; i < table->table_cap; ++i)
+    /* double capacity first, hash function takes hashtab structure */
+    table->table_cap <<= 1;
+    for (int i = 0; i < table->table_cap >> 1; ++i)
     {
         /* rehash each node of a chain, when we place into the new table,
          * follow the same format of making each insertion the new head of that chain */
@@ -83,7 +85,6 @@ void hash_resize(struct hashtab *table)
     }
     free(table->table);
     table->table = new_table;
-    table->table_cap <<= 1;
 }
 
 struct hash_node *hash_get(struct hashtab *table, const char *key)

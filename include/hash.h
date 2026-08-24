@@ -27,8 +27,10 @@ struct hashtab {
  * returns a hashtab structure */
 struct hashtab create_tab();
 
-/* ...... */
+/* TODO: ...... */
 bool insert(struct hashtab *table, const char *file, const char *key, unsigned line);
+
+void hash_clear(struct hashtab *tab);
 
 
 #endif

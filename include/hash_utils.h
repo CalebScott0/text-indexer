@@ -15,5 +15,8 @@ struct hash_node *hash_get(struct hashtab *table, const char *key);
 
 /* Initialize a hash node. Allocates memory for a struct hash_node, and assigns default values to all members.
  * returns pointer to allocated memory, or NULL if failure */
-
 struct hash_node *create_hash_node();
+
+#define LOAD_FACTOR 1.5
+/* resize: double hash table capacity if insert is equal or greater than the load factor */
+void hash_resize(struct hashtab *table);

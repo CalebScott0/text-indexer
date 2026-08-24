@@ -12,7 +12,10 @@ TESTS = ./tests
 avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h $(INCLUDE)/avl_utils.h
 	$(CC) $(CFLAGS) -c $<
 	
-hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h
+hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h $(INCLUDE)/hash_utils.h
+	$(CC) $(CFLAGS) -c $<
+
+utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
 	$(CC) $(CFLAGS) -c $<
 
 avl_test: $(TESTS)/avl_tests.c avl.o
@@ -21,7 +24,7 @@ avl_test: $(TESTS)/avl_tests.c avl.o
 run_test_avl: avl_test
 	./$<
 
-main: hash.o avl.o $(SRC)/main.c 
+main: hash.o avl.o $(SRC)/main.c utils.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 run_main: main

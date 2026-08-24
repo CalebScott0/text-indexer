@@ -119,6 +119,26 @@ struct tree_node *__insert(struct tree_node *node,
     return node;
 }
 
+struct tree_node *left_rot(struct tree_node *root)
+{
+    struct tree_node *new_root = root->right;
+    root->right = new_root->left;
+    new_root->left = root;
+    root->height -= 1;
+
+    return new_root;
+}
+
+struct tree_node *right_rot(struct tree_node *root)
+{
+    struct tree_node *new_root = root->left;
+    root->left = new_root->right;
+    new_root->right = root;
+    root->height -= 1;
+
+    return new_root;
+}
+
 void tree_clear(struct tree *t)
 {
     void __clear(struct tree_node *);

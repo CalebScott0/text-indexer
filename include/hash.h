@@ -14,7 +14,6 @@ struct hash_node {
     struct hash_node *next; /* pointer to next node in chain */
 };
 
-// TODO: REMBMER THE LOAD FACTOR!!!! For chaining.....
 struct hashtab {
     struct hash_node **table;    /* dynamic array of pointers to nodes */
 
@@ -28,9 +27,10 @@ struct hashtab {
 struct hashtab create_tab();
 
 /* TODO: ...... */
-bool insert(struct hashtab *table, const char *file, const char *key, unsigned line);
+bool insert(struct hashtab *htab, const char *file, const char *key, unsigned line);
 
-void hash_clear(struct hashtab *tab);
+/* free all memory allocated to tab and its members */
+void hash_clear(struct hashtab *htab);
 
 
 #endif

@@ -6,34 +6,34 @@
 #include <string.h>
 
 /* for now this is the hash function implemented in K&R */
-size_t hash(struct hashtab *table, const char *key)
+size_t hash(struct hashtab *htab, const char *key)
 {
     size_t hashval = 0;
     while (*key != '\0')
     {
         hashval = *key++ + 31 * hashval;
     }
-    return hashval % table->table_cap;
+    return hashval % htab->table_cap;
 }
 
-bool insert(struct hashtab *tab, const char *key, const char *file, unsigned line)
+bool insert(struct hashtab *htab, const char *key, const char *file, unsigned line)
 {
     struct hash_node *pn;
     /* key not in table */
-    if ((pn = hash_get(tab, key)) == NULL)
+    if ((pn = hash_get(htab, key)) == NULL)
     {
         // create a new hash node, and loc_node point to it with hash[hashval], make head...
-        unsigned hashval = hash(tab, key);
+        unsigned hashval = hash(htab, key);
         struct hash_node *new_node = create_hash_node();
         new_node->loc_list = create_loc(file, line);
         new_node->key = str_dup(key);
-        new_node->next = tab->table[hashval];
-        tab->table[hashval] = new_node;
-        tab->table_sz++;
+        new_node->next = htab->table[hashval];
+        htab->table[hashval] = new_node;
+        htab->table_sz++;
 
-        if ((double) tab->table_sz / tab->table_cap >= LOAD_FACTOR)
+        if ((double) htab->table_sz / htab->table_cap >= LOAD_FACTOR)
         {
-            hash_resize(tab);
+            hash_resize(htab);
         }
 
         return true;
@@ -57,23 +57,23 @@ bool insert(struct hashtab *tab, const char *key, const char *file, unsigned lin
     return false;
 }
 
-void hash_resize(struct hashtab *table)
+void hash_resize(struct hashtab *htab)
 {
     /* TODO: error checks? on arg and malloc below? */
 
     /* initialize new table with double capacity */
     struct hash_node **new_table = 
         (struct hash_node **) malloc(sizeof(struct hash_node *) * 2 * table->table_cap);
-    for (int i = 0; i < table->table_cap << 1; ++i)
+    for (int i = 0; i < htab->table_cap << 1; ++i)
         new_table[i] = NULL;
 
     /* double capacity first, hash function takes hashtab structure */
     table->table_cap <<= 1;
-    for (int i = 0; i < table->table_cap >> 1; ++i)
+    for (int i = 0; i < htab->table_cap >> 1; ++i)
     {
         /* rehash each node of a chain, when we place into the new table,
          * follow the same format of making each insertion the new head of that chain */
-        struct hash_node *curr = table->table[i];
+        struct hash_node *curr = htab->table[i];
         while (curr)
         {
             struct hash_node *temp = curr->next;

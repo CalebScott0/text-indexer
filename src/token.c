@@ -17,7 +17,7 @@ int gettoken(char *s, int lim)
         return c;
     }
 
-    for (; isalpha())
+    for (; )kkjjjjkk
     
     return s[0];
 }

@@ -53,7 +53,6 @@ bool insert(struct hashtab *htab, const char *key, const char *file, unsigned li
         pn->loc_list = loc_node;
     }
 
-    
     return false;
 }
 
@@ -63,12 +62,12 @@ void hash_resize(struct hashtab *htab)
 
     /* initialize new table with double capacity */
     struct hash_node **new_table = 
-        (struct hash_node **) malloc(sizeof(struct hash_node *) * 2 * table->table_cap);
+        (struct hash_node **) malloc(sizeof(struct hash_node *) * 2 * htab->table_cap);
     for (int i = 0; i < htab->table_cap << 1; ++i)
         new_table[i] = NULL;
 
     /* double capacity first, hash function takes hashtab structure */
-    table->table_cap <<= 1;
+    htab->table_cap <<= 1;
     for (int i = 0; i < htab->table_cap >> 1; ++i)
     {
         /* rehash each node of a chain, when we place into the new table,
@@ -77,23 +76,23 @@ void hash_resize(struct hashtab *htab)
         while (curr)
         {
             struct hash_node *temp = curr->next;
-            unsigned hashval = hash(table, curr->key);
+            unsigned hashval = hash(htab, curr->key);
             curr->next = new_table[hashval];
             new_table[hashval] = curr;
             curr = temp;
         }
     }
-    free(table->table);
-    table->table = new_table;
+    free(htab->table);
+    htab->table = new_table;
 }
 
-struct hash_node *hash_get(struct hashtab *table, const char *key)
+struct hash_node *hash_get(struct hashtab *htab, const char *key)
 {
-    if (table->table == NULL) return NULL;
+    if (htab->table == NULL) return NULL;
 
-    unsigned hash_v = hash(table, key);
+    unsigned hash_v = hash(htab, key);
     /* walk the list of hash nodes looking for key */
-    for (struct hash_node *pn = table->table[hash_v]; pn != NULL; pn = pn->next)
+    for (struct hash_node *pn = htab->table[hash_v]; pn != NULL; pn = pn->next)
     {
         if(strcmp(pn->key, key) == 0)
             return pn;

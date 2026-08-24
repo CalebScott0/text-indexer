@@ -28,6 +28,8 @@ void push_back_line(struct location_node *node, unsigned value)
         plines[(*sz)++] = value;
 }
 
+
+
 char *str_dup(const char *__s)
 {
     char *w = (char *) malloc(strlen(__s) + 1);

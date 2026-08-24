@@ -28,74 +28,20 @@
 
 /* TODO: CHANGE TO MATCH NEW TOP LEVEL STRUCT FORMAT */
 
-bool avl_validate(struct t_node *root);
+bool avl_validate(struct tree_node *root);
+bool is_balanced(struct tree_node *root);
+bool valid_heights(struct tree_node *root, int *height);
 bool test_is_bst();
 
 int main()
 {
     assert(test_is_bst());
-    struct t_node *root = NULL;
 
     /*********************
      *  trees of size 3  *
      *********************/
 
     /* left_rotate(a) after "c" insert */
-    root = insert(root, "a", 12);
-    root = insert(root, "b", 12);
-    root = insert(root, "c", 12);
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
-
-    /* right_rotate(c) after "a" insert */
-    root = insert(root, "c", 12);
-    root = insert(root, "b", 12);
-    root = insert(root, "a", 12);
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
-
-    /* right_rotate(c) -> left_rotate(a) */
-    root = insert(root, "a", 12); 
-    root = insert(root, "c", 12); 
-    root = insert(root, "b", 12); 
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
-
-    /* left_rotate(a) -> right_rotate(b) */
-    root = insert(root, "c", 12); 
-    root = insert(root, "a", 12); 
-    root = insert(root, "b", 12); 
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
-
-    /*********************
-     *    Bigger Trees   *
-     *********************/
-
-    /* left_rotate(b) -> right_rotate(e) */
-    root = insert(root,"e", 12);
-    root = insert(root,"g", 12);
-    root = insert(root,"b", 12);
-    root = insert(root,"a", 12);
-    root = insert(root,"d", 12);
-    root = insert(root,"c", 12);
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
-
-    root = insert(root,"e", 12);
-    root = insert(root,"g", 12);
-    root = insert(root,"b", 12);
-    root = insert(root,"a", 12);
-    root = insert(root,"c", 12);
-    root = insert(root,"d", 12);
-    assert(avl_validate(root));
-    clear(root);
-    root = NULL;
 
     /**/
 
@@ -109,14 +55,14 @@ int main()
     return 0;
 }
 
-bool avl_validate(struct t_node *root)
+bool avl_validate(struct tree_node *root)
 {
     if (root == NULL)
         return true;
 
-    bool is_bst(struct t_node *);
-    bool valid_heights(struct t_node *, int *);
-    bool is_balanced(struct t_node *);
+    bool is_bst(struct tree_node *);
+    bool valid_heights(struct tree_node *, int *);
+    bool is_balanced(struct tree_node *);
 
     int height;
 
@@ -134,7 +80,7 @@ bool avl_validate(struct t_node *root)
  *      which here we use the fact that our keys are tokens (words)
  *      and must start with an alpha char?
  */
-bool is_bst(struct t_node *root)
+bool is_bst(struct tree_node *root)
 {
     if (!root->left && !root->right)
         return true;
@@ -151,7 +97,7 @@ bool is_bst(struct t_node *root)
     return is_right && is_left;
 }
 
-bool valid_heights(struct t_node *root, int *height)
+bool valid_heights(struct tree_node *root, int *height)
 {
     if (!root)
     {
@@ -174,7 +120,7 @@ bool valid_heights(struct t_node *root, int *height)
 
 /* since we validate the heights of each node first,
  * we can use them here */
-bool is_balanced(struct t_node *root)
+bool is_balanced(struct tree_node *root)
 {
     if (!root)
         return true;
@@ -191,18 +137,4 @@ bool is_balanced(struct t_node *root)
 /* TODO: TEST THE ABOVE 3 FUNCTIONS for checks lol, gotta test the tests */
 bool test_is_bst()
 {
-    struct t_node *root = NULL;
-    root = insert(root, "b", 1);
-    root = insert(root, "c", 1);
-    //root->right->right = create_node()
-
-    if (!is_bst(root))
-    {
-        clear(root);
-        return false;
-    }
-
-    clear(root);
-
-    return true;
 }

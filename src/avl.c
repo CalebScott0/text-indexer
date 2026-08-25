@@ -6,7 +6,8 @@
 #include <string.h>
 
 #include "../include/avl.h"
-#include "../include/avl_utils.h"
+
+#define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
 struct tree create_tree()
 {

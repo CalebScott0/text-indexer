@@ -1,6 +1,5 @@
 
 #include "../include/hash.h"
-#include "../include/hash_utils.h"
 
 #include <stdlib.h>
 #include <string.h>

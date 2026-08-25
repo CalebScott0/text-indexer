@@ -12,10 +12,10 @@ TESTS = ./tests
 # TODO: make usable with mac (fsanitize env vars and txt file?)
 # 	make variables for the .o targets to clean up the below? */
 
-avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h $(INCLUDE)/avl_utils.h
+avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h
 	$(CC) $(CFLAGS) -c $<
 	
-hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h $(INCLUDE)/hash_utils.h
+hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h
 	$(CC) $(CFLAGS) -c $<
 
 utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
@@ -36,7 +36,7 @@ avl_test: $(TESTS)/avl_tests.c avl.o
 test_avl: avl_test
 	./$<
 
-main: hash.o avl.o $(SRC)/main.c utils.o
+main: $(SRC)/main.c hash.o avl.o utils.o token.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 run_main: main

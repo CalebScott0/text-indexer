@@ -19,7 +19,7 @@ struct location_node {
 /* initialize a location node, allocates memory for the node,
  * filename, and for the starting cap of lines. also adds lineno to lines */
 
-/* TODO: make starting capacity an argument, no macro here,
+/* TODO: make starting capacity an argument??, no macro here,
  *  redo the tests */
 #define STARTCAP 5
 struct location_node *create_loc(const char *file, unsigned lineno);

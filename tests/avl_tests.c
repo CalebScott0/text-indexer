@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "../include/avl.h"
-#include "../include/avl_utils.h"
 
 /* Functions to check structure
  * i.e. functions that run through the whole tree? 
@@ -19,8 +18,8 @@
  * - Max Element Trees
  * - Sorted input, unsorted input etc, and then size for test of runtime, graph it!
  *
- * also have to check lines array.. 
- *  and that the lines array resizes properly with values and capacity
+ *
+ *
  *  -> maybe use something like a to_string function!! also useful for the program...
  */
 
@@ -41,9 +40,18 @@ int main()
      *  trees of size 3  *
      *********************/
 
-    /* left_rotate(a) after "c" insert */
+    //empty tree
+    //one node
+    //duplicate key
+    //all four rotations
+    //multiple rotations
+    //search
+    //deletion (if implementing it)
+    //destruction
 
-    /**/
+    /************************
+     *  Max Size Rotations  *
+     ************************/
 
     /*********************
      *  Chained Inserts  *

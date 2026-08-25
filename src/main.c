@@ -9,7 +9,11 @@
 #define MAXTOKEN 100
 
 /* TODO: Don't forget list of exlcusion words,
- *  i.e. (stop words??) but whatever words are basic and not informant */
+ *  i.e. (stop words??) but whatever words are basic and not informant 
+ *  --------------------------------
+ *  for index wrapper functionality:
+ *  you don't necessarily need void *
+ *  if you use an enum/function pointers to distinguish the backend.*/
 
 int main()
 {

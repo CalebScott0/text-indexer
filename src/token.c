@@ -17,8 +17,12 @@ int gettoken(char *s, int lim)
         return c;
     }
 
-    for (; )kkjjjjkk
-    
+    /* allow apostrophes dashes in words, also allow underscores (great artist btw)?? */
+    for (*s++ = c; --lim > 0 && (isalpha(c = getch()) || c == '\'' || c == '-'); )
+        *s++ = c;
+
+    ungetch(c);
+    *s = '\0';
     return s[0];
 }
 

@@ -22,13 +22,17 @@ bool insert(struct hashtab *htab, const char *key, const char *file, unsigned li
     /* key not in table */
     if ((pn = hash_get(htab, key)) == NULL)
     {
-        // create a new hash node, and loc_node point to it with hash[hashval], make head...
+        // create a new hash node, and loc_node point to it with hash[hashval], make head
         unsigned hashval = hash(htab, key);
+
         struct hash_node *new_node = create_hash_node();
+
         new_node->loc_list = create_loc(file, line);
         new_node->key = str_dup(key);
+
         new_node->next = htab->table[hashval];
         htab->table[hashval] = new_node;
+
         htab->table_sz++;
 
         if ((double) htab->table_sz / htab->table_cap >= LOAD_FACTOR)

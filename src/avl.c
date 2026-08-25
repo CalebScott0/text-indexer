@@ -62,6 +62,7 @@ struct tree_node *__insert(struct tree_node *node,
         else
         {
             struct location_node *new = create_loc(file, lineno);
+
             /* make new the head of loc_list */
             new->next = node->loc_list; 
             node->loc_list = new;
@@ -151,8 +152,9 @@ void __clear(struct tree_node *node)
     __clear(node->left);
     __clear(node->right);
 
-    /* TODO: function to free node location list */
+    clear_loc_list(node->loc_list);
     free(node->key);
+
     free(node);
 }
 

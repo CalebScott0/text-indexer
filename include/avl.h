@@ -48,9 +48,6 @@ void tree_clear(struct tree *t);
  * returns pointer to allocated memory, or NULL if failure */
 struct tree_node *create_tree_node();
 
-/* return the balance factor of the node */
-int balance_factor(struct tree_node *__n);
-
 /* apply a left rotation to node, adjusts its height,
  * returns the new subtree root (node->right) */
 struct tree_node *left_rot(struct tree_node *node);

@@ -30,24 +30,50 @@
 bool avl_validate(struct tree_node *root);
 bool is_balanced(struct tree_node *root);
 bool valid_heights(struct tree_node *root, int *height);
+/* TODO: */
 bool test_is_bst();
 
 int main()
 {
-    assert(test_is_bst());
+    /* empty tree */
+    struct tree test_tree = create_tree();
+    assert(test_tree.root == NULL);
+
+    /* one node */
+    assert(tree_insert(&test_tree, "key", "file1", 1));
+    struct tree_node *root = test_tree.root;
+    assert(root->height == 0);
+    assert(root->left == NULL && root->right == NULL);
+    assert(strcmp(root->key, "key") == 0);
+    /* we test location separately, but make sure we assign the list */
+    assert(root->loc_list->lines[0] == 1);
+    assert(strcmp(root->loc_list->filename, "file1") == 0);
+
+    /* duplicate key */
+    tree_insert(&test_tree, "key", "file1", 2);
+    assert(root->height == 0);
+    assert(root->left == NULL && root->right == NULL);
+    assert(strcmp(root->key, "key") == 0);
+    assert(root->loc_list->lines[0] == 1);
+    assert(root->loc_list->lines[1] == 2);
+    struct location_node *old_head = root->loc_list;
+
+    /* same key new file */
+    tree_insert(&test_tree, "key", "new_file", 4);
+    assert(root->height == 0);
+    assert(root->left == NULL && root->right == NULL);
+    assert(strcmp(root->key, "key") == 0);
+    assert(strcmp(root->loc_list->filename, "new_file") == 0);
+    assert(root->loc_list->lines[0] == 4);
+    assert(root->loc_list->next == old_head);
+    tree_clear(&test_tree);
+
+    /* all four rotations both with the minimum rotation size
+     * and the 'maximum' number of nodes involved in any full rotation process */
 
     /*********************
      *  trees of size 3  *
      *********************/
-
-    //empty tree
-    //one node
-    //duplicate key
-    //all four rotations
-    //multiple rotations
-    //search
-    //deletion (if implementing it)
-    //destruction
 
     /************************
      *  Max Size Rotations  *
@@ -58,6 +84,10 @@ int main()
      *  i.e. one insert breaks, and keep inserting to more breaks, etc 
      *********************/
 
+    //multiple rotations
+    //search
+    //deletion (if implementing it)
+    //destruction
     printf("\n✅ Passed\n");
 
     return 0;
@@ -79,7 +109,6 @@ bool avl_validate(struct tree_node *root)
            is_balanced(root);
 }
 
-/* we assume root to exist */
 /* TODO: optionally can change to accept a null root,
  * if the args passed in from avl_validate 
  * follow the minimum / maximum value check
@@ -88,6 +117,7 @@ bool avl_validate(struct tree_node *root)
  *      which here we use the fact that our keys are tokens (words)
  *      and must start with an alpha char?
  */
+/* we assume root to exist */
 bool is_bst(struct tree_node *root)
 {
     if (!root->left && !root->right)
@@ -145,4 +175,5 @@ bool is_balanced(struct tree_node *root)
 /* TODO: TEST THE ABOVE 3 FUNCTIONS for checks lol, gotta test the tests */
 bool test_is_bst()
 {
+    return false;
 }

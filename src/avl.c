@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "../include/avl.h"
+#include "../include/utils.h"
 
 #define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
@@ -145,6 +146,7 @@ void tree_clear(struct tree *t)
 {
     void __clear(struct tree_node *);
     __clear(t->root);
+    t->root = NULL;
 }
 
 void __clear(struct tree_node *node)

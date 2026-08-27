@@ -68,12 +68,21 @@ int main()
     assert(root->loc_list->next == old_head);
     tree_clear(&test_tree);
 
+    /* avl property tests */
+    test_is_bst();
+
     /* all four rotations both with the minimum rotation size
      * and the 'maximum' number of nodes involved in any full rotation process */
 
     /*********************
      *  trees of size 3  *
      *********************/
+    /* Left(a) */
+    tree_insert(&test_tree, "a", "", 0);
+    tree_insert(&test_tree, "b", "", 0);
+    tree_insert(&test_tree, "c", "", 0);
+
+    
 
     /************************
      *  Max Size Rotations  *
@@ -175,5 +184,15 @@ bool is_balanced(struct tree_node *root)
 /* TODO: TEST THE ABOVE 3 FUNCTIONS for checks lol, gotta test the tests */
 bool test_is_bst()
 {
-    return false;
+    /* FIXME: for now you can not pass null root into is_bst(), see fct */
+
+    /* Test on known correct & incorrect trees */
+    struct tree test_tree = create_tree();
+    tree_insert(&test_tree, "c", "", 0);
+    assert(is_bst(test_tree.root) == true);
+    test_tree.root->left = create_tree_node();
+    strcpy(test_tree.root->left->key, "d");
+    assert(is_bst(test_tree.root) == false);
+
+    return true;
 }

@@ -191,8 +191,11 @@ bool test_is_bst()
     tree_insert(&test_tree, "c", "", 0);
     assert(is_bst(test_tree.root) == true);
     test_tree.root->left = create_tree_node();
-    strcpy(test_tree.root->left->key, "d");
+    test_tree.root->left->key = str_dup("d");
     assert(is_bst(test_tree.root) == false);
+    test_tree.root->left->key = "a";
+
+        /* TODO: make this more 'automated' i.e. using arrays of values for insert? */
 
     return true;
 }

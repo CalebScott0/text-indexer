@@ -101,7 +101,8 @@ int main()
     /************************
      *  Max Size Rotations  *
      ************************/
-    /* Left Right */
+
+    /* Left Right Rotation */
     tree_insert(&test_tree, "m", "", 0);  
     tree_insert(&test_tree, "h", "", 0);  
     tree_insert(&test_tree, "z", "", 0);  
@@ -109,9 +110,10 @@ int main()
     tree_insert(&test_tree, "k", "", 0);  
     tree_insert(&test_tree, "i", "", 0);  
     assert(avl_validate(test_tree.root));
+    assert(test_tree.root->key[0] == 'k');
     tree_clear(&test_tree);
 
-    /* Left Left */
+    /* Right Rotation */
     tree_insert(&test_tree, "m", "", 0);  
     tree_insert(&test_tree, "h", "", 0);  
     tree_insert(&test_tree, "z", "", 0);  
@@ -119,9 +121,10 @@ int main()
     tree_insert(&test_tree, "k", "", 0);  
     tree_insert(&test_tree, "g", "", 0);  
     assert(avl_validate(test_tree.root));
+    assert(test_tree.root->key[0] == 'h');
     tree_clear(&test_tree);
 
-    /* Right Left */
+    /* Right Left Rotation */
     tree_insert(&test_tree, "b", "", 0);  
     tree_insert(&test_tree, "a", "", 0);  
     tree_insert(&test_tree, "m", "", 0);  
@@ -129,23 +132,33 @@ int main()
     tree_insert(&test_tree, "s", "", 0);  
     tree_insert(&test_tree, "k", "", 0);  
     assert(avl_validate(test_tree.root));
+    assert(test_tree.root->key[0] == 'g');
     tree_clear(&test_tree);
 
-    /* Right Right */
+    /*  Left Rotation */
     tree_insert(&test_tree, "b", "", 0);  
     tree_insert(&test_tree, "a", "", 0);  
     tree_insert(&test_tree, "m", "", 0);  
     tree_insert(&test_tree, "g", "", 0);  
     tree_insert(&test_tree, "s", "", 0);  
-    tree_insert(&test_tree, "z", "", 0);  
+    tree_insert(&test_tree, "t", "", 0);  
+    assert(test_tree.root->key[0] == 'm');
     assert(avl_validate(test_tree.root));
-    tree_clear(&test_tree);
-    /*********************
-     *  Chained Inserts  *
-     *  i.e. one insert breaks, and keep inserting to more breaks, etc 
-     *********************/
 
-    //search
+    /* Chained Inserts continue off the above rotated */
+    tree_insert(&test_tree, "v", "", 0);  
+    tree_insert(&test_tree, "d", "", 0);  
+    tree_insert(&test_tree, "k", "", 0);  
+    tree_insert(&test_tree, "j", "", 0);  
+    tree_insert(&test_tree, "h", "", 0);  
+    tree_insert(&test_tree, "r", "", 0);  
+    tree_insert(&test_tree, "p", "", 0);  
+    assert(avl_validate(test_tree.root));
+
+    tree_clear(&test_tree);
+
+    // TODO:search
+    
     printf("\n✅ Passed\n");
 
     return 0;
@@ -438,11 +451,11 @@ bool test_is_balanced_heights()
     (*root)->left = create_tree_node();
     (*root)->left->height = 2;
 
-    (*root)->left->left = create_tree_node();
-    (*root)->left->left->height = 1;
+    (*root)->left->right = create_tree_node();
+    (*root)->left->right->height = 1;
 
-    (*root)->left->left->left = create_tree_node();
-    (*root)->left->left->left->height = 0;
+    (*root)->left->right->left = create_tree_node();
+    (*root)->left->right->left->height = 0;
 
     (*root)->right = create_tree_node();
     (*root)->right->height = 0;

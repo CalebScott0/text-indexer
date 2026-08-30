@@ -9,6 +9,8 @@
 #include <stdbool.h>
 #include "utils.h"
 
+/* TODO: how to separate the payload from structure?
+ * i.e. for tree and linked list, we track node, and separate payload to track data */
 struct tree_node {
     char *key;
     struct location_node *loc_list;  /* list of locations */

@@ -28,9 +28,6 @@
 /* TODO: CHANGE TO MATCH NEW TOP LEVEL STRUCT FORMAT */
 
 bool avl_validate(struct tree_node *root);
-bool is_balanced(struct tree_node *root);
-bool valid_heights(struct tree_node *root, int *height);
-/* TODO: */
 bool test_is_bst();
 
 int main()
@@ -81,6 +78,7 @@ int main()
     tree_insert(&test_tree, "a", "", 0);
     tree_insert(&test_tree, "b", "", 0);
     tree_insert(&test_tree, "c", "", 0);
+    tree_clear(&test_tree);
 
     
 
@@ -107,43 +105,42 @@ bool avl_validate(struct tree_node *root)
     if (root == NULL)
         return true;
 
-    bool is_bst(struct tree_node *);
+
+    bool is_bst(struct tree_node *, char **);
     bool valid_heights(struct tree_node *, int *);
     bool is_balanced(struct tree_node *);
 
     int height;
 
-    return is_bst(root) &&
+    char *pkey = NULL;
+    return is_bst(root, &pkey) &&
            valid_heights(root, &height) &&
            is_balanced(root);
 }
 
-/* TODO: optionally can change to accept a null root,
- * if the args passed in from avl_validate 
- * follow the minimum / maximum value check
- * where the first char of min string is '\0'
- * and the first char of the max string is (char) ('z' + 1)
- *      which here we use the fact that our keys are tokens (words)
- *      and must start with an alpha char?
- */
-/* we assume root to exist */
-bool is_bst(struct tree_node *root)
+/* inorder visits in increasing order, store previous to check the next node,
+ * prev as ptr to ptr to char allows us to retain the pointer through recursive backtrack */
+
+bool is_bst(struct tree_node *root, char **prev)
 {
-    if (!root->left && !root->right)
+    if (root == NULL)
         return true;
 
-    if (root->left && strcmp(root->key, root->left->key) < 0) 
-        return false; /* root < left */
+    /* if any left subtree is invalid, tree is invalid */
+    if (!is_bst(root->left, prev))
+        return false;
 
-    if (root->right && strcmp(root->key, root->right->key) > 0) 
-        return false; /* root > right */
+    /* stricly increasing order, check if we have stored a prev key yet */
+    if (*prev != NULL && strcmp(root->key, *prev) <= 0)
+        return false;
 
-    bool is_right = root->right ? is_bst(root->right) : true;
-    bool is_left = root->left ? is_bst(root->left) : true;
+    /* store for next node check */
+    *prev = root->key;
 
-    return is_right && is_left;
+    return is_bst(root->right, prev);
 }
 
+/* TODO: combine valid_heights and is_balanced, avoids mulitple of the same recursive traversals */
 bool valid_heights(struct tree_node *root, int *height)
 {
     if (!root)
@@ -181,21 +178,122 @@ bool is_balanced(struct tree_node *root)
         return false; /* a subtree is broken */
 }
 
-/* TODO: TEST THE ABOVE 3 FUNCTIONS for checks lol, gotta test the tests */
 bool test_is_bst()
 {
-    /* FIXME: for now you can not pass null root into is_bst(), see fct */
-
-    /* Test on known correct & incorrect trees */
+    /* empty tree */
     struct tree test_tree = create_tree();
-    tree_insert(&test_tree, "c", "", 0);
-    assert(is_bst(test_tree.root) == true);
-    test_tree.root->left = create_tree_node();
-    test_tree.root->left->key = str_dup("d");
-    assert(is_bst(test_tree.root) == false);
-    test_tree.root->left->key = "a";
+    struct tree_node **root = &test_tree.root;
+    char *pkey = NULL;
 
-        /* TODO: make this more 'automated' i.e. using arrays of values for insert? */
+    assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
 
+    /* one node */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+
+    assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* valid: root + left */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+    (*root)->left = create_tree_node();
+    (*root)->left->key = str_dup("a");
+
+    assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* valid: root + right */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+    (*root)->right = create_tree_node();
+    (*root)->right->key = str_dup("c");
+
+    assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* valid: three-node tree */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+
+    (*root)->left = create_tree_node();
+    (*root)->left->key = str_dup("a");
+
+    (*root)->right = create_tree_node();
+    (*root)->right->key = str_dup("c");
+
+    assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* invalid: left child > root */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+    (*root)->left = create_tree_node();
+    (*root)->left->key = str_dup("c");
+
+    assert(!is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* invalid: right child < root */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+    (*root)->right = create_tree_node();
+    (*root)->right->key = str_dup("a");
+
+    assert(!is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /* invalid: duplicate key */
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("b");
+    (*root)->left = create_tree_node();
+    (*root)->left->key = str_dup("b");
+
+    assert(!is_bst(*root, &pkey));
+    tree_clear(&test_tree);
+
+    /*
+     * invalid: deep violation
+     *
+     *       c
+     *      / \
+     *     b   d
+     *        /
+     *       a
+     *
+     */
+    test_tree = create_tree();
+    root = &test_tree.root;
+    pkey = NULL;
+
+    *root = create_tree_node();
+    (*root)->key = str_dup("c");
+
+    (*root)->left = create_tree_node();
+    (*root)->left->key = str_dup("b");
+
+    (*root)->right = create_tree_node();
+    (*root)->right->key = str_dup("d");
+
+    (*root)->right->left = create_tree_node();
+    (*root)->right->left->key = str_dup("a");
+
+    assert(!is_bst(*root, &pkey));
+    tree_clear(&test_tree);
     return true;
 }

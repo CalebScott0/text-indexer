@@ -74,20 +74,78 @@ int main()
     /*********************
      *  trees of size 3  *
      *********************/
+    tree_insert(&test_tree, "a", "", 0);  
+    tree_insert(&test_tree, "b", "", 0);  
+    tree_insert(&test_tree, "c", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
+
+    tree_insert(&test_tree, "c", "", 0);  
+    tree_insert(&test_tree, "b", "", 0);  
+    tree_insert(&test_tree, "a", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
+
+    tree_insert(&test_tree, "a", "", 0);  
+    tree_insert(&test_tree, "c", "", 0);  
+    tree_insert(&test_tree, "b", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
+
+    tree_insert(&test_tree, "c", "", 0);  
+    tree_insert(&test_tree, "a", "", 0);  
+    tree_insert(&test_tree, "b", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
 
     /************************
      *  Max Size Rotations  *
      ************************/
+    /* Left Right */
+    tree_insert(&test_tree, "m", "", 0);  
+    tree_insert(&test_tree, "h", "", 0);  
+    tree_insert(&test_tree, "z", "", 0);  
+    tree_insert(&test_tree, "d", "", 0);  
+    tree_insert(&test_tree, "k", "", 0);  
+    tree_insert(&test_tree, "i", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
 
+    /* Left Left */
+    tree_insert(&test_tree, "m", "", 0);  
+    tree_insert(&test_tree, "h", "", 0);  
+    tree_insert(&test_tree, "z", "", 0);  
+    tree_insert(&test_tree, "d", "", 0);  
+    tree_insert(&test_tree, "k", "", 0);  
+    tree_insert(&test_tree, "g", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
+
+    /* Right Left */
+    tree_insert(&test_tree, "b", "", 0);  
+    tree_insert(&test_tree, "a", "", 0);  
+    tree_insert(&test_tree, "m", "", 0);  
+    tree_insert(&test_tree, "g", "", 0);  
+    tree_insert(&test_tree, "s", "", 0);  
+    tree_insert(&test_tree, "k", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
+
+    /* Right Right */
+    tree_insert(&test_tree, "b", "", 0);  
+    tree_insert(&test_tree, "a", "", 0);  
+    tree_insert(&test_tree, "m", "", 0);  
+    tree_insert(&test_tree, "g", "", 0);  
+    tree_insert(&test_tree, "s", "", 0);  
+    tree_insert(&test_tree, "z", "", 0);  
+    assert(avl_validate(test_tree.root));
+    tree_clear(&test_tree);
     /*********************
      *  Chained Inserts  *
      *  i.e. one insert breaks, and keep inserting to more breaks, etc 
      *********************/
 
-    //multiple rotations
     //search
-    //deletion (if implementing it)
-    //destruction
     printf("\n✅ Passed\n");
 
     return 0;
@@ -101,14 +159,11 @@ bool avl_validate(struct tree_node *root)
 
     bool is_bst(struct tree_node *, char **);
     bool balanced_heights(struct tree_node *, int *);
-    bool is_balanced(struct tree_node *);
 
     int height;
 
     char *pkey = NULL;
-    return is_bst(root, &pkey) &&
-           balanced_heights(root, &height) &&
-           is_balanced(root);
+    return is_bst(root, &pkey) && balanced_heights(root, &height);
 }
 
 /* inorder visits in increasing order, store previous to check the next node,
@@ -309,15 +364,7 @@ bool test_is_balanced_heights()
     assert(balanced_heights(*root, &height) == false);
     (*root)->right->height = 0;
 
-    /*
-     * Deeper tree:
-     *
-     *       *
-     *      / \
-     *     *   *
-     *          \
-     *           *
-     */
+    /* Deeper tree: */
     (*root)->height = 2;
     (*root)->right->height = 1;
     (*root)->right->right = create_tree_node();
@@ -336,15 +383,7 @@ bool test_is_balanced_heights()
     free((*root)->right->right);
     (*root)->right->right = NULL;
 
-    /*
-     * Deep left leaf:
-     *
-     *       *
-     *      / \
-     *     *   *
-     *        /
-     *       *
-     */
+    /* Deep left leaf: */
     (*root)->right->left = create_tree_node();
     assert(balanced_heights(*root, &height) == true);
     /* incorrect deep leaf height */
@@ -356,14 +395,7 @@ bool test_is_balanced_heights()
      *        Unbalanced trees      *
      ********************************/
 
-    /*
-     * Unbalanced left-heavy tree:
-     *       *
-     *      /
-     *     *
-     *    /
-     *   *
-     */
+    /* Unbalanced left-heavy tree: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
@@ -379,16 +411,7 @@ bool test_is_balanced_heights()
 
     assert(balanced_heights(*root, &height) == false);
 
-
-    /*
-     * Unbalanced right-heavy tree:
-     *
-     *   *
-     *    \
-     *     *
-     *      \
-     *       *
-     */
+    /* Unbalanced right-heavy tree: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
@@ -404,20 +427,7 @@ bool test_is_balanced_heights()
 
     assert(balanced_heights(*root, &height) == false);
 
-    /*
-     * Unbalanced deeper subtree:
-     *
-     *       *
-     *      / \
-     *     *   *
-     *    /
-     *   *
-     *  /
-     * *
-     *
-     * Heights are all correct, but root's left subtree
-     * is itself unbalanced.
-     */
+    /* Unbalanced deeper subtree: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
@@ -439,17 +449,7 @@ bool test_is_balanced_heights()
 
     assert(balanced_heights(*root, &height) == false);
 
-    /*
-     * Balanced tree with multiple levels:
-     *
-     *          *
-     *        /   \
-     *       *     *
-     *      / \   / \
-     *     *   * *   *
-     *
-     * All heights correct.
-     */
+    /* Balanced tree with multiple levels: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;

@@ -1,6 +1,7 @@
-CC = cc
+CC = cc 
 CFLAGS =  \
 	 -Wall -Wextra -Wextra \
+	 -Wno-strict-prototypes \
 	 -pedantic -std=c17 -I. -g \
 	 -fno-omit-frame-pointer \
 	 -fsanitize=address,undefined \

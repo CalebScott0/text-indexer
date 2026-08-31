@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+
 #include "utils.h"
 
 struct hash_node {
@@ -27,7 +28,7 @@ struct hashtab {
 struct hashtab create_tab();
 
 /* TODO: ...... */
-bool insert(struct hashtab *htab, const char *file, const char *key, unsigned line);
+bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsigned line);
 
 /* free all memory allocated to tab and its members */
 void hash_clear(struct hashtab *htab);

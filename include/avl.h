@@ -10,7 +10,8 @@
 #include "utils.h"
 
 /* TODO: how to separate the payload from structure?
- * i.e. for tree and linked list, we track node, and separate payload to track data */
+ * i.e. for tree and linked list, we track node, and separate payload to track data
+ * TODO: fix up parameters and member var names, i.e. const? and pick a naming convention */
 struct tree_node {
     char *key;
     struct location_node *loc_list;  /* list of locations */
@@ -39,9 +40,9 @@ struct tree {
  */ 
 bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lineno);
 
-/* TODO: void *for get ? for fct pointer? 
-    get: needs to search for the key, and if found return a void ? pointer to lines, and the sz of lines?
-    other idea is return a pointer to the node, void? */
+/* avl_get: search for the node containing key,
+ * return a pointer to the node if found, else NULL */
+struct tree_node *avl_get(const struct tree *t, const char *key);
 
 /* free all allocated memory */
 void tree_clear(struct tree *t);

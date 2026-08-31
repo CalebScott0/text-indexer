@@ -155,10 +155,9 @@ int main()
     tree_insert(&test_tree, "p", "", 0);  
     assert(avl_validate(test_tree.root));
 
-    tree_clear(&test_tree);
+    /* Search */
 
-    // TODO:search
-    
+    tree_clear(&test_tree);
     printf("\n✅ Passed\n");
 
     return 0;

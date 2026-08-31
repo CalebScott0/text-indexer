@@ -16,6 +16,23 @@ struct tree create_tree()
     return ret;
 }
 
+struct tree_node *avl_get(const struct tree *t, const char *key)
+{
+    struct tree_node *curr = t->root;
+
+    while (curr)
+    {
+        int cond = strcmp(key, curr->key);
+        if (cond == 0)
+        {
+            return curr;
+        }
+        curr = (cond < 0) ? curr->left : curr->right;
+    }
+    
+    return NULL;
+}
+
 bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lineno)
 {
     struct tree_node *__insert(struct tree_node *, const char *, const char *, unsigned, bool *);

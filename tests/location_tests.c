@@ -43,8 +43,7 @@ int main()
         assert(test_loc->lines[i-1] == i);
     clear_loc_list(test_loc);
 
-    /* TODO: checking whether a filename exists?
-     *  don't need to test clear on a list, that will happen in the tree/hash */
+    /* TODO: checking whether a filename exists? or would this go within the tree/hash search? */
 
     printf("\n✅ Passed\n");
     return 0;

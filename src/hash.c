@@ -59,19 +59,45 @@ bool insert(struct hashtab *htab, const char *key, const char *file, unsigned li
     return false;
 }
 
+void hash_clear(struct hashtab *tab)
+{
+    for (size_t i = 0; i < tab->table_cap; ++i)
+    {
+        /* point to the current bucket element (or NULL) */
+        struct hash_node *node = tab->table[i];
+        for (; node != NULL; node = node->next)
+        {
+            /* clear location list attached to node */
+            clear_loc_list(node->loc_list);
+
+            struct hash_node *temp = node->next;
+            free(node->key);
+            free(node);
+            node = temp;
+        }
+    }
+
+    /* TODO: use realloc in places? and /or calloc?? */
+
+    /* free memory of the table */
+    free(tab->table);
+    tab->table = NULL;
+    tab->table_sz = 0;
+}
+
 void hash_resize(struct hashtab *htab)
 {
-    /* TODO: error checks? on arg and malloc below? */
+    /* TODO: error checks on all mallocs? on arg and malloc below? */
 
     /* initialize new table with double capacity */
     struct hash_node **new_table = 
         (struct hash_node **) malloc(sizeof(struct hash_node *) * 2 * htab->table_cap);
-    for (int i = 0; i < htab->table_cap << 1; ++i)
+    for (unsigned i = 0; i < htab->table_cap << 1; ++i)
         new_table[i] = NULL;
 
     /* double capacity first, hash function takes hashtab structure */
     htab->table_cap <<= 1;
-    for (int i = 0; i < htab->table_cap >> 1; ++i)
+    for (unsigned i = 0; i < htab->table_cap >> 1; ++i)
     {
         /* rehash each node of a chain, when we place into the new table,
          * follow the same format of making each insertion the new head of that chain */

@@ -36,6 +36,12 @@ avl_test: $(TESTS)/avl_tests.c avl.o utils.o
 test_avl: avl_test
 	./$<
 
+hash_test: $(TESTS)/hash_tests.c hash.o utils.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+test_hash: hash_test
+	./$<
+
 main: $(SRC)/main.c hash.o avl.o utils.o token.o
 	$(CC) $(CFLAGS) $^ -o $@
 
@@ -45,4 +51,4 @@ run_main: main
 clean:
 	rm -f *.o main *_test
 
-.PHONY: clean run_main test_avl test_location
+.PHONY: clean run_main test_avl test_location test_hash

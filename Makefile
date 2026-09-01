@@ -50,6 +50,7 @@ run_main: main
 	./$<
 #
 clean:
-	rm -f *.o main *_test
+	rm -f *.o main *_test 
+	rm -rf *.dSYM
 
 .PHONY: clean run_main test_avl test_location test_hash

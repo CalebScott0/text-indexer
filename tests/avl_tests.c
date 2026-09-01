@@ -155,10 +155,9 @@ int main()
     tree_insert(&test_tree, "p", "", 0);  
     assert(avl_validate(test_tree.root));
 
-    tree_clear(&test_tree);
+    /* Search */
 
-    // TODO:search
-    
+    tree_clear(&test_tree);
     printf("\n✅ Passed\n");
 
     return 0;
@@ -232,7 +231,8 @@ bool test_is_bst()
      * if we were to create a tree node on root as just a pointer, this
      * would no longer be the same tree node as our test_tree.root */
     struct tree_node **root = &test_tree.root;
-    char *pkey = NULL;
+    /* this is just used for the prev char in the recursion backtrack */
+    char *pkey = NULL; 
 
     assert(is_bst(*root, &pkey));
     tree_clear(&test_tree);
@@ -242,24 +242,15 @@ bool test_is_bst()
 
     *root = create_tree_node();
     (*root)->key = str_dup("b");
-
     assert(is_bst(*root, &pkey));
-    tree_clear(&test_tree);
-
-    /* valid: root + left */
+    
     pkey = NULL;
-
-    *root = create_tree_node();
-    (*root)->key = str_dup("b");
+    /* valid: root + left */
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("a");
-
     assert(is_bst(*root, &pkey));
-    tree_clear(&test_tree);
 
     /* valid: root + right */
-    pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     (*root)->right = create_tree_node();

@@ -4,7 +4,6 @@
 
 #include "../include/hash.h"
 
-
 int main()
 {
     /* empty table */
@@ -30,10 +29,17 @@ int main()
 
     hash_clear(&test_tab);
 
+    assert(hash_insert(&test_tab, "key1", "", 0));
+    assert(test_tab.table_sz == 1);
+
+    //collisions/multiple keys in same bucket
     //duplicate key
     //resizing
     //search
     //destruction
+
+    /* TODO: make sure ASAN/LSAN also works on mac */
+    hash_clear(&test_tab);
 
     printf("\n✅ Passed\n");
 

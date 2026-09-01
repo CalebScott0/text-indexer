@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+
 #include "utils.h"
 
 struct hash_node {

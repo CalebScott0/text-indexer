@@ -1,4 +1,3 @@
-
 #include "../include/hash.h"
 
 #include <stdlib.h>
@@ -65,7 +64,7 @@ void hash_clear(struct hashtab *tab)
     {
         /* point to the current bucket element (or NULL) */
         struct hash_node *node = tab->table[i];
-        for (; node != NULL; node = node->next)
+        for (; node != NULL; node = node ? node->next : NULL)
         {
             /* clear location list attached to node */
             clear_loc_list(node->loc_list);
@@ -74,6 +73,11 @@ void hash_clear(struct hashtab *tab)
             free(node->key);
             free(node);
             node = temp;
+            if (node)
+            {
+                /* TODO: make this logic clearner */
+                node = node->next;
+            }
         }
     }
 
@@ -93,7 +97,9 @@ void hash_resize(struct hashtab *htab)
     struct hash_node **new_table = 
         (struct hash_node **) malloc(sizeof(struct hash_node *) * 2 * htab->table_cap);
     for (unsigned i = 0; i < htab->table_cap << 1; ++i)
+    {
         new_table[i] = NULL;
+    }
 
     /* double capacity first, hash function takes hashtab structure */
     htab->table_cap <<= 1;
@@ -133,7 +139,7 @@ struct hash_node *hash_get(struct hashtab *htab, const char *key)
 struct hash_node *create_hash_node()
 {
     struct hash_node *node =
-        (struct hash_node *) malloc (sizeof(struct hash_node));
+        (struct hash_node *) malloc(sizeof(struct hash_node));
     if (node)
     {
         node->key = NULL;

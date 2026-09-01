@@ -15,7 +15,7 @@ size_t hash(struct hashtab *htab, const char *key)
     return hashval % htab->table_cap;
 }
 
-bool insert(struct hashtab *htab, const char *key, const char *file, unsigned line)
+bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsigned line)
 {
     struct hash_node *pn;
     /* key not in table */

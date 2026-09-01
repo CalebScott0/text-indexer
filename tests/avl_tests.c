@@ -168,13 +168,12 @@ bool avl_validate(struct tree_node *root)
     if (root == NULL)
         return true;
 
-
     bool is_bst(struct tree_node *, char **);
     bool balanced_heights(struct tree_node *, int *);
 
     int height;
-
     char *pkey = NULL;
+
     return is_bst(root, &pkey) && balanced_heights(root, &height);
 }
 
@@ -219,7 +218,6 @@ bool balanced_heights(struct tree_node *root, int *height)
         return root->height == *height && balance_factor <= 1;
     }
 
-
     return false;
 }
 
@@ -229,7 +227,7 @@ bool test_is_bst()
     struct tree test_tree = create_tree();
     /* pointer to pointer, since test_tree.root is initialized to NULL
      * if we were to create a tree node on root as just a pointer, this
-     * would no longer be the same tree node as our test_tree.root */
+     * would no longer be the same pointer as our test_tree.root */
     struct tree_node **root = &test_tree.root;
     /* this is just used for the prev char in the recursion backtrack */
     char *pkey = NULL; 
@@ -239,7 +237,6 @@ bool test_is_bst()
 
     /* one node */
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     assert(is_bst(*root, &pkey));
@@ -249,61 +246,52 @@ bool test_is_bst()
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("a");
     assert(is_bst(*root, &pkey));
+    tree_clear(&test_tree);
 
+    pkey = NULL;
     /* valid: root + right */
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     (*root)->right = create_tree_node();
     (*root)->right->key = str_dup("c");
-
     assert(is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
     /* valid: three-node tree */
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
-
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("a");
-
     (*root)->right = create_tree_node();
     (*root)->right->key = str_dup("c");
-
     assert(is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
     /* invalid: left child > root */
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("c");
-
     assert(!is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
     /* invalid: right child < root */
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     (*root)->right = create_tree_node();
     (*root)->right->key = str_dup("a");
-
     assert(!is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
     /* invalid: duplicate key */
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("b");
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("b");
-
     assert(!is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
@@ -311,19 +299,14 @@ bool test_is_bst()
     test_tree = create_tree();
     root = &test_tree.root;
     pkey = NULL;
-
     *root = create_tree_node();
     (*root)->key = str_dup("c");
-
     (*root)->left = create_tree_node();
     (*root)->left->key = str_dup("b");
-
     (*root)->right = create_tree_node();
     (*root)->right->key = str_dup("d");
-
     (*root)->right->left = create_tree_node();
     (*root)->right->left->key = str_dup("a");
-
     assert(!is_bst(*root, &pkey));
     tree_clear(&test_tree);
 
@@ -337,62 +320,61 @@ bool test_is_balanced_heights()
     struct tree_node **root = &test_tree.root;
 
     /* empty tree */
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
 
     /* single node */
     *root = create_tree_node();
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
 
     /* incorrect root height */
     (*root)->height = 2;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->height = 0;
 
     /* one left child */
     (*root)->height = 1;
     (*root)->left = create_tree_node();
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
 
     /* incorrect left child height */
     (*root)->left->height = 1;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->left->height = 0;
 
 
     /* one right child */
     (*root)->right = create_tree_node();
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
 
     /* incorrect right child height */
     (*root)->right->height = 1;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->right->height = 0;
 
     /* Deeper tree: */
     (*root)->height = 2;
     (*root)->right->height = 1;
     (*root)->right->right = create_tree_node();
-
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
 
     /* incorrect deep leaf height */
     (*root)->right->right->height = 2;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->right->right->height = 0;
 
     /* incorrect intermediary height */
     (*root)->right->height = 3;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->right->height = 1;
     free((*root)->right->right);
     (*root)->right->right = NULL;
 
     /* Deep left leaf: */
     (*root)->right->left = create_tree_node();
-    assert(balanced_heights(*root, &height) == true);
+    assert(balanced_heights(*root, &height));
     /* incorrect deep leaf height */
     (*root)->right->left->height = 1;
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
     (*root)->right->left->height = 0;
 
     /********************************
@@ -403,78 +385,57 @@ bool test_is_balanced_heights()
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
-
     *root = create_tree_node();
     (*root)->height = 2;
-
     (*root)->left = create_tree_node();
     (*root)->left->height = 1;
-
     (*root)->left->left = create_tree_node();
     (*root)->left->left->height = 0;
-
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
 
     /* Unbalanced right-heavy tree: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
-
     *root = create_tree_node();
     (*root)->height = 2;
-
     (*root)->right = create_tree_node();
     (*root)->right->height = 1;
-
     (*root)->right->right = create_tree_node();
     (*root)->right->right->height = 0;
-
-    assert(balanced_heights(*root, &height) == false);
+    assert(!balanced_heights(*root, &height));
 
     /* Unbalanced deeper subtree: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
-
     *root = create_tree_node();
     (*root)->height = 3;
-
     (*root)->left = create_tree_node();
     (*root)->left->height = 2;
-
     (*root)->left->right = create_tree_node();
     (*root)->left->right->height = 1;
-
     (*root)->left->right->left = create_tree_node();
     (*root)->left->right->left->height = 0;
-
     (*root)->right = create_tree_node();
     (*root)->right->height = 0;
-
     assert(balanced_heights(*root, &height) == false);
 
     /* Balanced tree with multiple levels: */
     tree_clear(&test_tree);
     test_tree = create_tree();
     root = &test_tree.root;
-
     *root = create_tree_node();
     (*root)->height = 2;
-
     (*root)->left = create_tree_node();
     (*root)->left->height = 1;
-
     (*root)->right = create_tree_node();
     (*root)->right->height = 1;
-
     (*root)->left->left = create_tree_node();
     (*root)->left->right = create_tree_node();
-
     (*root)->right->left = create_tree_node();
     (*root)->right->right = create_tree_node();
-
     assert(balanced_heights(*root, &height) == true);
-
     tree_clear(&test_tree);
 
     return true;

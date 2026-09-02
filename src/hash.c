@@ -64,20 +64,16 @@ void hash_clear(struct hashtab *tab)
     {
         /* point to the current bucket element (or NULL) */
         struct hash_node *node = tab->table[i];
-        for (; node != NULL; node = node ? node->next : NULL)
+        struct hash_node *next = NULL;
+        while (node)
         {
             /* clear location list attached to node */
             clear_loc_list(node->loc_list);
 
-            struct hash_node *temp = node->next;
+            next = node->next;
             free(node->key);
             free(node);
-            node = temp;
-            if (node)
-            {
-                /* TODO: make this logic clearner */
-                node = node->next;
-            }
+            node = next;
         }
     }
 

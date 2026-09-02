@@ -11,7 +11,9 @@
 
 /* TODO: how to separate the payload from structure?
  * i.e. for tree and linked list, we track node, and separate payload to track data
- * TODO: fix up parameters and member var names, i.e. const? and pick a naming convention */
+ * TODO: fix up parameters and member var names, i.e. const? and pick a naming convention
+ *  
+ *  - Make into the other structure with just left / right, wrap those in a pay load...*/
 struct tree_node {
     char *key;
     struct location_node *loc_list;  /* list of locations */

@@ -3,9 +3,11 @@
 
 #include <stddef.h>
 
-/* TODO: make this name more generic? i.e. like just a vector or something
+/*  TODO: make this name more generic? i.e. like just a vector or something
 * - Move struct definitions back to source file? (makes them opaque)
 *  - currently moved here for testing to make life easier */
+
+/* TODO: - Make into the other structure with just left / right, wrap those in a pay load...*/
 struct location_node {
     char *filename;
     unsigned *lines;

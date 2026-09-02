@@ -22,17 +22,18 @@ int main()
     assert(node->loc_list != NULL);
     assert(test_tab.table_sz == 1);
 
-
     /* collisions/multiple keys in same bucket */
     /* WARNING: for now the hash function hashes any key containing the same characters to
      * the same value, so "key1" and "1key" hash to the same value */
 
-    hash_clear(&test_tab);
+    assert(hash_insert(&test_tab, "1key", "", 0));
+    assert(test_tab.table_sz == 2);
 
-    assert(hash_insert(&test_tab, "key1", "", 0));
-    assert(test_tab.table_sz == 1);
+    /* this should be true, we insert new keys into the bucket as the head of the list */
+    node = hash_get(&test_tab, "1key");
+    assert(strcmp(node->key, "1key") == 0);
+    assert(strcmp(node->next->key, "key1") == 0);
 
-    //collisions/multiple keys in same bucket
     //duplicate key
     //resizing
     //search

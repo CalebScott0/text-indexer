@@ -12,8 +12,11 @@
  *  i.e. (stop words??) but whatever words are basic and not informant 
  *  --------------------------------
  *  for index wrapper functionality:
- *  you don't necessarily need void *
+ *  you don't necessarily need void * ??
  *  if you use an enum/function pointers to distinguish the backend.*/
+
+
+/* move this into seperate module when done, just testing stuff out */
 
 int main()
 {
@@ -25,5 +28,9 @@ int main()
             printf("%s\n", s);
         }
     }
+
+    /* avl_get(const struct tree *t, const char *key) */
+    /* hash_get(struct hashtab *tab, const char *key) */
+
     return 0;
 }

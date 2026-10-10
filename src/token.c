@@ -2,10 +2,10 @@
 #include <ctype.h>
 #include "../include/token.h"
 
-int gettoken(char *s, int lim)
+int gettoken(char *s, int lim, FILE *infile)
 {
     int c;
-    while (isspace(c = getch()))
+    while (isspace(c = fgetc(infile)))
         ;
 
     /* TODO: do we only want alpha characters at the start ?

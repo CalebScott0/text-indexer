@@ -51,6 +51,9 @@ main: $(SRC)/main.c hash.o avl.o utils.o token.o
 run_main: main
 	./$<
 
+index_test: main
+	./$< tree input
+
 clean:
 	rm -f *.o main *_test 
 	rm -rf *.dSYM

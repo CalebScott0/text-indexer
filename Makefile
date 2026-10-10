@@ -3,8 +3,8 @@ CFLAGS =  \
 	 -Wall -Wextra -Wextra \
 	 -Wno-strict-prototypes \
 	 -pedantic -std=c17 -I. -g \
-	 -fno-omit-frame-pointer \
 	 -fsanitize=address,undefined \
+	 -fno-omit-frame-pointer \
 
 INCLUDE = ./include
 SRC = ./src
@@ -53,4 +53,4 @@ clean:
 	rm -f *.o main *_test 
 	rm -rf *.dSYM
 
-.PHONY: clean run_main test_avl test_location test_hash
+PHONY: clean run_main test_avl test_location test_hash

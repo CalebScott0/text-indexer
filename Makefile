@@ -2,7 +2,7 @@ CC = cc
 CFLAGS =  \
 	 -Wall -Wextra -Wextra \
 	 -Wno-strict-prototypes \
-	 -pedantic -std=c17 -I. -g \
+	 -pedantic -std=c11 -I. -g \
 	 -fsanitize=address,undefined \
 	 -fno-omit-frame-pointer \
 
@@ -10,8 +10,10 @@ INCLUDE = ./include
 SRC = ./src
 TESTS = ./tests
 
-# TODO: make usable with mac (fsanitize env vars and txt file?)
-# 	make variables for the .o targets to clean up the below? */
+# WARNING: Remember LeakSanitizer is not supported on this platform 
+
+#TODO: Run your unit tests with both sanitizers enabled, but disable
+# them for performance benchmarks because their instrumentation significantly affects execution time.
 
 utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
 	$(CC) $(CFLAGS) -c $<
@@ -48,9 +50,9 @@ main: $(SRC)/main.c hash.o avl.o utils.o token.o
 
 run_main: main
 	./$<
-#
+
 clean:
 	rm -f *.o main *_test 
 	rm -rf *.dSYM
 
-PHONY: clean run_main test_avl test_location test_hash
+.PHONY: clean run_main test_avl test_location test_hash

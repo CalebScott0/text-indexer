@@ -155,7 +155,7 @@ int main()
     tree_insert(&test_tree, "p", "", 0);  
     assert(avl_validate(test_tree.root));
 
-    /* Search */
+    /*TODO: Search */
 
     tree_clear(&test_tree);
     printf("\n✅ Passed\n");
@@ -436,6 +436,7 @@ bool test_is_balanced_heights()
     (*root)->right->left = create_tree_node();
     (*root)->right->right = create_tree_node();
     assert(balanced_heights(*root, &height) == true);
+
     tree_clear(&test_tree);
 
     return true;

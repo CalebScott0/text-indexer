@@ -6,6 +6,9 @@
 
 #include "../include/avl.h"
 
+
+
+/* TODO: ALSO USE THIS WITH REAL INPUT, i.e. stuff that isn't one character long */
 /* Functions to check structure
  * i.e. functions that run through the whole tree? 
  * 1. BST Value structure 
@@ -19,11 +22,8 @@
  * - Sorted input, unsorted input etc, and then size for test of runtime, graph it!
  *
  *
- *
  *  -> maybe use something like a to_string function!! also useful for the program...
  */
-
-/* TODO: ALSO USE THIS WITH REAL INPUT, i.e. stuff that isn't one character long */
 
 bool avl_validate(struct tree_node *root);
 bool test_is_bst();

@@ -18,19 +18,21 @@
 
 /* move this into seperate module when done, just testing stuff out */
 
-int main()
+int main(int argc, char *argv[])
 {
     char s[MAXTOKEN];
+
+    struct tree my_tree = create_tree();
     while (gettoken(s, MAXTOKEN) != EOF)
     {
         if (isalpha(s[0]))
         {
             printf("%s\n", s);
+            tree_insert(&my_tree, s, "", 0);
         }
     }
 
-    /* avl_get(const struct tree *t, const char *key) */
-    /* hash_get(struct hashtab *tab, const char *key) */
+    tree_clear(&my_tree);
 
     return 0;
 }

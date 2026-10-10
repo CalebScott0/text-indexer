@@ -77,8 +77,6 @@ void hash_clear(struct hashtab *tab)
         }
     }
 
-    /* TODO: use realloc in places? and /or calloc?? */
-
     /* free memory of the table */
     free(tab->table);
     tab->table = NULL;

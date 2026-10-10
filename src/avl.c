@@ -33,10 +33,12 @@ struct tree_node *avl_get(const struct tree *t, const char *key)
     return NULL;
 }
 
-bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lineno)
+bool tree_insert(void *_t , const char *key, const char *file, unsigned lineno)
 {
     struct tree_node *__insert(struct tree_node *, const char *, const char *, unsigned, bool *);
     bool is_insert = false;
+
+    struct tree *t = _t;
     t->root = __insert(t->root, key, file, lineno, &is_insert);
 
     return is_insert;

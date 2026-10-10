@@ -36,7 +36,7 @@ struct tree {
  *  - lineno: line number of the file key appears in 
  *  returns: true if and only if a new node was inserted
  */ 
-bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lineno);
+bool tree_insert(void *_t, const char *key, const char *file, unsigned lineno);
 
 /* avl_get: search for the node containing key,
  * return a pointer to the node if found, else NULL */

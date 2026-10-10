@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,22 +18,55 @@
 
 
 /* move this into seperate module when done, just testing stuff out */
+bool insert(
+        bool (* inserter)(void *, const char *, const char *, unsigned),
+            void *type, char *key, char *file, unsigned lin)
+{
+    return (*inserter)(type, key, file, lin);
+}
+
+enum { TREE, HASH };
 
 int main(int argc, char *argv[])
 {
     char s[MAXTOKEN];
+    //if (argc < 2)
+    //{
+        ///* TODO: help usage function */
+        //return 1;
+    //}
+    
 
+    //char structure = -1;
+    //if (strcmp(argv[1], "tree") == 0)
+    //{
+        //structure = TREE;
+    //}
+    //else if (strcmp(argv[1], "hash") == 0)
+    //{
+        //structure = HASH;
+    //}
+    //else
+    //{
+        //return 1;
+    //}
+    
     struct tree my_tree = create_tree();
-    while (gettoken(s, MAXTOKEN) != EOF)
-    {
-        if (isalpha(s[0]))
-        {
-            printf("%s\n", s);
-            tree_insert(&my_tree, s, "", 0);
-        }
-    }
+    struct hashtab my_hash = create_tab();
 
-    tree_clear(&my_tree);
+    char *x[] = { "hello", "world", "are", "you", "zebra", NULL };
+
+    //while (gettoken(s, MAXTOKEN) != EOF)
+    for (char **p = x; *p != NULL; ++p)
+    {
+        insert(&tree_insert, &my_tree, *p, "", 0);
+        /* if (isalpha(s[0]))
+        {
+            if (structure == TREE)
+                insert(&tree_insert, &my_tree, "key", "", 0);
+        }
+        */
+    }
 
     return 0;
 }

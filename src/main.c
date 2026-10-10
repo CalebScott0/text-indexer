@@ -17,18 +17,37 @@
  *  if you use an enum/function pointers to distinguish the backend.*/
 
 
-/* move this into seperate module when done, just testing stuff out */
-bool insert(
-        bool (* inserter)(void *, const char *, const char *, unsigned),
-            void *type, char *key, char *file, unsigned lin)
+enum dt_type { TREE, HASH };
+
+struct index {
+    enum dt_type type;
+    struct tree *tree;
+    struct hashtab *hash;
+};
+
+bool index_insert(struct index *idx, const char *key, const char *file, unsigned line)
 {
-    return (*inserter)(type, key, file, lin);
+    if (idx->type == TREE)
+        return tree_insert(idx->tree, key, file, line);
+
+    return hash_insert(idx->hash, key, file, line);
 }
 
-enum { TREE, HASH };
+void print_tree(struct tree_node *node)
+{
+    if (!node) return;
+    printf("%s\n", node->key);
+    print_tree(node->left);
+    print_tree(node->right);
+}
 
 int main(int argc, char *argv[])
 {
+    struct index my_index;
+    my_index.type = TREE;
+    my_index.tree = (struct tree *) malloc (sizeof (struct tree));
+    *my_index.tree = create_tree();
+
     char s[MAXTOKEN];
     //if (argc < 2)
     //{
@@ -36,37 +55,17 @@ int main(int argc, char *argv[])
         //return 1;
     //}
     
-
-    //char structure = -1;
-    //if (strcmp(argv[1], "tree") == 0)
-    //{
-        //structure = TREE;
-    //}
-    //else if (strcmp(argv[1], "hash") == 0)
-    //{
-        //structure = HASH;
-    //}
-    //else
-    //{
-        //return 1;
-    //}
-    
-    struct tree my_tree = create_tree();
-    struct hashtab my_hash = create_tab();
-
-    char *x[] = { "hello", "world", "are", "you", "zebra", NULL };
-
-    //while (gettoken(s, MAXTOKEN) != EOF)
-    for (char **p = x; *p != NULL; ++p)
+    while (gettoken(s, MAXTOKEN) != EOF)
     {
-        insert(&tree_insert, &my_tree, *p, "", 0);
-        /* if (isalpha(s[0]))
+        if (isalpha(s[0]))
         {
-            if (structure == TREE)
-                insert(&tree_insert, &my_tree, "key", "", 0);
+            index_insert(&my_index, s, "file", 0);
         }
-        */
     }
+
+    print_tree(my_index.tree->root);
+    tree_clear(my_index.tree);
+    free(my_index.tree);
 
     return 0;
 }

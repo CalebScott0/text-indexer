@@ -112,6 +112,8 @@ int main(int argc, char *argv[])
 
     int count = 0;
     printf("Creating the index...\n");
+    /* TODO: render bar for loading */
+
     while (argc >= 0)
     {
         FILE *infile = fopen(*argv, "r");
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
             {
                 if (index_insert(&my_index, s, *argv, line_count))
                 {
-                    /* Todo: delete this after timing stuff */
+                    /* TODO: delete this after timing stuff */
                     ++count;
                 }
             }

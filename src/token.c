@@ -19,8 +19,9 @@ int gettoken(char *s, int lim, FILE *infile)
     }
 
     /* allow apostrophes dashes in words, also allow underscores */
-    for (*s++ = c; --lim > 0 && (isalpha(c = getch(infile)) || c == '\'' || c == '-'); )
-        *s++ = c;
+    /* TODO: for now everything is lower case */
+    for (*s++ = tolower(c); --lim > 0 && (isalpha(c = getch(infile)) || c == '\'' || c == '-'); )
+        *s++ = tolower(c);
 
     ungetch(c);
     *s = '\0';

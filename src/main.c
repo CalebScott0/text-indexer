@@ -141,21 +141,22 @@ int main(int argc, char *argv[])
             }
         }
 
-        char input[100];
-        while (strcmp(input, "q") != 0)
-        {
-            printf("Enter a word to search for in the index: ");
-            scanf("%s", input);
-            printf("%s\n", input);
-            index_print(&my_index, input);
-        }
-
         fclose(infile);
         ++argv;
         --argc;
     }
 
     printf("num inserted = %d\n", count);
+
+    char input[100];
+    while (strcmp(input, "q") != 0)
+    {
+        printf("Enter a word to search for in the index: ");
+        scanf("%s", input);
+        printf("%s\n", input);
+        index_print(&my_index, input);
+    }
+
     index_clear(&my_index);
 
     return 0;

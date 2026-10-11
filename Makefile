@@ -10,7 +10,7 @@ INCLUDE = ./include
 SRC = ./src
 TESTS = ./tests
 
-# WARNING: Remember LeakSanitizer is not supported on this platform 
+# WARNING: Remember LeakSanitizer is not supported on this macOS? 
 
 #TODO: Run your unit tests with both sanitizers enabled, but disable
 # them for performance benchmarks because their instrumentation significantly affects execution time.
@@ -51,8 +51,8 @@ main: $(SRC)/main.c hash.o avl.o utils.o token.o
 run_main: main
 	./$<
 
-index_test: main
-	./$< tree input
+index_dbg: main
+	gdb --args ./$< tree input
 
 clean:
 	rm -f *.o main *_test 

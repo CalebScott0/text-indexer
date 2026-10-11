@@ -44,6 +44,14 @@ void index_init(struct index *idx)
         idx->hash = create_tab();
 }
 
+void index_clear(struct index *idx)
+{
+    if (idx->type == TREE)
+        tree_clear(&idx->tree);
+    else
+        hash_clear(&idx->hash);
+}
+
 void print_tree(struct tree_node *node)
 {
     if (!node) return;
@@ -73,7 +81,8 @@ int main(int argc, char *argv[])
     argv += 2; /* first filename */
     argc -= 3; /* count - 1 of given filenames */
 
-    do {
+    while (argc >= 0)
+    {
         FILE *infile = fopen(*argv, "r");
         /* TODO: error handling on file open */
 
@@ -84,14 +93,15 @@ int main(int argc, char *argv[])
                 if (index_insert(&my_index, s, "file", 0))
                 {
                 }
-
             }
         }
 
         fclose(infile);
         ++argv;
         --argc;
-    } while (argc);
+    }
+
+    index_clear(&my_index);
 
     return 0;
 }

@@ -5,7 +5,7 @@
 int gettoken(char *s, int lim, FILE *infile)
 {
     int c;
-    while (isspace(c = fgetc(infile)))
+    while (isspace(c = getch(infile)))
         ;
 
     /* TODO: do we only want alpha characters at the start ?
@@ -18,7 +18,7 @@ int gettoken(char *s, int lim, FILE *infile)
     }
 
     /* allow apostrophes dashes in words, also allow underscores */
-    for (*s++ = c; --lim > 0 && (isalpha(c = getch()) || c == '\'' || c == '-'); )
+    for (*s++ = c; --lim > 0 && (isalpha(c = getch(infile)) || c == '\'' || c == '-'); )
         *s++ = c;
 
     ungetch(c);
@@ -34,8 +34,8 @@ void ungetch(int c)
         fprintf(stderr, "Error: ungetch() - bufffer full");
 }
 
-char getch()
+char getch(FILE *infile)
 {
-    return pbuf != buf ? *--pbuf : getchar();
+    return pbuf != buf ? *--pbuf : fgetc(infile);
 }
 

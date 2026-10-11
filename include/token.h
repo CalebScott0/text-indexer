@@ -15,4 +15,4 @@ static char *pbuf = buf;
 int gettoken(char *s, int lim, FILE *infile);
 
 void ungetch(int c);
-char getch();
+char getch(FILE *infile);

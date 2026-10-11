@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "../include/avl.h"
 #include "../include/hash.h"
@@ -62,6 +63,8 @@ void print_tree(struct tree_node *node)
 
 int main(int argc, char *argv[])
 {
+    printf("argc = %d\n", argc);
+    sleep(2);
 
     char s[MAXTOKEN];
     if (argc < 2)
@@ -81,17 +84,25 @@ int main(int argc, char *argv[])
     argv += 2; /* first filename */
     argc -= 3; /* count - 1 of given filenames */
 
+    int count = 0;
     while (argc >= 0)
     {
         FILE *infile = fopen(*argv, "r");
         /* TODO: error handling on file open */
+        if (!infile) {
+            ++argv;
+            --argc;
+            continue;
+        };
 
         while (gettoken(s, MAXTOKEN, infile) != EOF)
+            /* TODO: NEED TO COUNT LINES */
         {
             if (isalpha(s[0]))
             {
-                if (index_insert(&my_index, s, "file", 0))
+                if (index_insert(&my_index, s, *argv, 0))
                 {
+                    ++count;
                 }
             }
         }
@@ -101,6 +112,7 @@ int main(int argc, char *argv[])
         --argc;
     }
 
+    printf("num inserted = %d\n", count);
     index_clear(&my_index);
 
     return 0;

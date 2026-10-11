@@ -1,10 +1,13 @@
 CC = cc 
-CFLAGS =  \
-	 -Wall -Wextra -Wextra \
+DEV_CFLAGS =  \
+	 -Wall -Wextra \
 	 -Wno-strict-prototypes \
 	 -pedantic -std=c11 -I. -g \
 	 -fsanitize=address,undefined \
 	 -fno-omit-frame-pointer \
+
+CFLAGS =  \
+		  -std=c11 -I. -O3
 
 INCLUDE = ./include
 SRC = ./src
@@ -16,43 +19,37 @@ TESTS = ./tests
 # them for performance benchmarks because their instrumentation significantly affects execution time.
 
 utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h utils.o
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h utils.o
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 token.o: $(SRC)/token.c $(INCLUDE)/token.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 loc_test: $(TESTS)/location_tests.c utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_location: loc_test
 	./$<
 
 avl_test: $(TESTS)/avl_tests.c avl.o utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_avl: avl_test
 	./$<
 
 hash_test: $(TESTS)/hash_tests.c hash.o utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_hash: hash_test
 	./$<
 
 main: $(SRC)/main.c hash.o avl.o utils.o token.o
-	$(CC) $(CFLAGS) $^ -o $@
-
-run_main: main
-	./$<
-
-index_dbg: main
-	gdb --args ./$< tree input
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 clean:
 	rm -f *.o main *_test 

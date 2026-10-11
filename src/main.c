@@ -53,6 +53,35 @@ void index_clear(struct index *idx)
         hash_clear(&idx->hash);
 }
 
+/* TODO: this needs to be more modular,
+ * i.e. this should be in the src file of the data type,
+ * retrieve object of index type and return ? */
+void index_print(struct index *idx, const char *key)
+{
+    if (idx->type == TREE)
+        return; /* TODO: */
+
+    struct hash_node *hnode = hash_get(&idx->hash, key);
+    if (hnode)
+    {
+        printf("\nResults for %s:\n", key);
+        struct location_node *locnode = hnode->loc_list;
+        while (locnode)
+        {
+            /* TODO: use string formatting func here or in a to_string function */
+            printf("File: %s\n", locnode->filename);
+            printf("Lines: ");
+            for (size_t i = 0; i < locnode->size; ++i)
+                printf("%u ", locnode->lines[i]);
+            printf("\n---------------------\n");
+            locnode = locnode->next;
+        }
+    }
+    else
+        fprintf(stderr, "Error: %s is not in the index\n", key);
+
+}
+
 void print_tree(struct tree_node *node)
 {
     if (!node) return;
@@ -63,9 +92,6 @@ void print_tree(struct tree_node *node)
 
 int main(int argc, char *argv[])
 {
-    printf("argc = %d\n", argc);
-    sleep(2);
-
     char s[MAXTOKEN];
     if (argc < 2)
     {
@@ -85,6 +111,7 @@ int main(int argc, char *argv[])
     argc -= 3; /* count - 1 of given filenames */
 
     int count = 0;
+    printf("Creating the index...\n");
     while (argc >= 0)
     {
         FILE *infile = fopen(*argv, "r");
@@ -95,17 +122,32 @@ int main(int argc, char *argv[])
             continue;
         };
 
+        unsigned line_count = 0;
         int c;
+
+
         while ((c = gettoken(s, MAXTOKEN, infile)) != EOF)
             /* TODO: NEED TO COUNT LINES */
         {
-            if (isalpha(s[0]))
+            if (c == '\n')
+                ++line_count;
+            else if (isalpha(s[0]))
             {
-                if (index_insert(&my_index, s, *argv, 0))
+                if (index_insert(&my_index, s, *argv, line_count))
                 {
+                    /* Todo: delete this after timing stuff */
                     ++count;
                 }
             }
+        }
+
+        char input[100];
+        while (strcmp(input, "q") != 0)
+        {
+            printf("Enter a word to search for in the index: ");
+            scanf("%s", input);
+            printf("%s\n", input);
+            index_print(&my_index, input);
         }
 
         fclose(infile);

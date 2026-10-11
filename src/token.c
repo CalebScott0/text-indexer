@@ -8,6 +8,9 @@ int gettoken(char *s, int lim, FILE *infile)
     while (isspace(c = getch(infile)))
         ;
 
+    if (c == '\n')
+        printf("%s\n", "newline!!!");
+
     /* TODO: do we only want alpha characters at the start ?
      * - this is what we can check on input to determine if we want to insert a token or not,
      *   i.e. test on if return is an alpha character */

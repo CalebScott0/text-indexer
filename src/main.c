@@ -95,7 +95,8 @@ int main(int argc, char *argv[])
             continue;
         };
 
-        while (gettoken(s, MAXTOKEN, infile) != EOF)
+        int c;
+        while ((c = gettoken(s, MAXTOKEN, infile)) != EOF)
             /* TODO: NEED TO COUNT LINES */
         {
             if (isalpha(s[0]))

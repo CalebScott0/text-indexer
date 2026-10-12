@@ -7,7 +7,7 @@ DEV_CFLAGS =  \
 	 -fno-omit-frame-pointer \
 
 CFLAGS =  \
-		  -std=c11 -I. -O3
+		  -std=c11 -I. -O2
 
 INCLUDE = ./include
 SRC = ./src
@@ -51,8 +51,24 @@ test_hash: hash_test
 main: $(SRC)/main.c hash.o avl.o utils.o token.o
 	$(CC) $(DEV_CFLAGS) $^ -o $@
 
+
+perf_utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
+	$(CC) $(CFLAGS) -c $< -o perf_utils.o
+
+perf_avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h utils.o
+	$(CC) $(CFLAGS) -c $< -o perf_avl.o
+
+perf_hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h utils.o
+	$(CC) $(CFLAGS) -c $< -o perf_hash.o
+
+perf_token.o: $(SRC)/token.c $(INCLUDE)/token.h
+	$(CC) $(CFLAGS) -c $< -o perf_token.o
+
+perf_main: $(SRC)/main.c perf_hash.o perf_avl.o perf_utils.o perf_token.o
+	$(CC) $(CFLAGS) $^ -o $@
+
 clean:
-	rm -f *.o main *_test 
+	rm -f *.o main perf_main *_test 
 	rm -rf *.dSYM
 
 .PHONY: clean run_main test_avl test_location test_hash

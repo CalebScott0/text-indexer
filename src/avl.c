@@ -102,23 +102,23 @@ struct tree_node *__insert(struct tree_node *node,
      * determine the rotations if unbalanced */
     int8_t balance_factor = get_height(node->left) - get_height(node->right);
 
-    if (balance_factor < -1 && strcmp(key, node->right->key) > 0) 
+    if (balance_factor < -1 && (cond = strcmp(key, node->right->key)) > 0) 
     {
         // returning the node returned by rotation functions assign it back up to its parent in back trace
         return left_rot(node);
     }
-    else if (balance_factor < -1 && strcmp(key, node->right->key) < 0)
+    else if (balance_factor < -1 && cond < 0)
     {
         node->right = right_rot(node->right);
         /* this node never gets recalculated below these conditions, do that now */
         node->right->height = 1 + MAX(get_height(node->right->left), get_height(node->right->right));
         return left_rot(node);
     }
-    else if (balance_factor > 1 && strcmp(key, node->left->key) < 0) 
+    else if (balance_factor > 1 && (cond = strcmp(key, node->left->key)) < 0) 
     {
         return right_rot(node);
     }
-    else if (balance_factor > 1 && strcmp(key, node->left->key) > 0)
+    else if (balance_factor > 1 && cond > 0)
     {
         node->left = left_rot(node->left);
         /* this node never gets recalculated below these conditions, do that now */

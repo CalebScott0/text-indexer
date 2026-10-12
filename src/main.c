@@ -193,6 +193,9 @@ int main(int argc, char *argv[])
     unsigned file_count = 0;
     while (argc >= 0)
     {
+        /* TODO: use gprof to see how long you actually spend in the insert function of each data type,
+         * to try and take out the file opening and closing time and all other noise */
+
         FILE *infile = fopen(*argv, "r");
         /* TODO: error handling on file open */
         if (!infile) 
@@ -203,14 +206,17 @@ int main(int argc, char *argv[])
         };
         ++file_count;
 
+        unsigned line_count = 1;
         int c;
         while ((c = gettoken(s, MAXTOKEN, infile)) != EOF)
             /* TODO: NEED TO COUNT LINES */
         {
-            // if (isalpha(s[0]) && !is_stop(s))
+            if (c == '\n')
+                ++line_count;
             if (isalpha(s[0]))
+            // if (isalpha(s[0]) && !is_stop(s))
             {
-                if (index_insert(&my_index, s, *argv, get_line_count()))
+                if (index_insert(&my_index, s, *argv, line_count))
                 {
                     ++word_count;
                 }
@@ -223,12 +229,14 @@ int main(int argc, char *argv[])
         }
 
         fclose(infile);
-        reset_line_count();
         ++argv;
         --argc;
     }
 
     printf("\nIndexed %u distinct words across %u files\n", word_count, file_count);
+    return 68;
+
+
     printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 
     char input[100];

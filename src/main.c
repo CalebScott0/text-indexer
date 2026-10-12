@@ -18,8 +18,7 @@
  *  --------------------------------
  *  for index wrapper functionality:
  *  if you use an enum/function pointers to distinguish the backend.
- *
- *  */
+ */
 
 enum dt_type { TREE, HASH };
 
@@ -109,6 +108,7 @@ bool index_insert(struct index *idx, const char *key, const char *file, unsigned
     if (idx->type == TREE)
         return tree_insert(&idx->tree, key, file, line);
 
+
     return hash_insert(&idx->hash, key, file, line);
 }
 
@@ -155,7 +155,6 @@ void index_print(struct index *idx, const char *key)
     }
     else
         fprintf(stderr, "\nError: %s is not in the index\n", key);
-
 }
 
 void print_tree(struct tree_node *node)
@@ -234,8 +233,6 @@ int main(int argc, char *argv[])
     }
 
     printf("\nIndexed %u distinct words across %u files\n", word_count, file_count);
-    return 68;
-
 
     printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 

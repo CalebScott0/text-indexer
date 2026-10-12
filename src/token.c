@@ -29,7 +29,6 @@ int gettoken(char *s, int lim, FILE *infile)
     return s[0];
 }
 
-
 void ungetch(int c)
 {
     if (pbuf < buf + BUFSIZE)

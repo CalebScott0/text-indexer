@@ -13,6 +13,8 @@ static char *pbuf = buf;
  * if token exceeds lim - 1, NO input is stored,
  * return first char stored in s, or a single non alpha character */
 int gettoken(char *s, int lim, FILE *infile);
+unsigned get_line_count();
+void reset_line_count();
 
 void ungetch(int c);
 char getch(FILE *infile);

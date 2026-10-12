@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,81 @@ struct index {
     struct tree tree;
     struct hashtab hash;
 };
+
+bool is_stop(const char *key)
+{
+    static char *stop_list[] = {
+        "a",
+        "about",
+        "all",
+        "an",
+        "and",
+        "as",
+        "at",
+        "be",
+        "but",
+        "by",
+        "do",
+        "for",
+        "from",
+        "get",
+        "go",
+        "have",
+        "he",
+        "her",
+        "his",
+        "i",
+        "if",
+        "in",
+        "it",
+        "my",
+        "not",
+        "of",
+        "on",
+        "one",
+        "or",
+        "out",
+        "say",
+        "she",
+        "so",
+        "that",
+        "the",
+        "their",
+        "there",
+        "they",
+        "this",
+        "to",
+        "up",
+        "we",
+        "what",
+        "when",
+        "which",
+        "who",
+        "will",
+        "with",
+        "would",
+        "you"
+    };
+
+    /* binary search */
+    char **begin = stop_list;
+    char **end = &stop_list[0x32];
+    char **middle = NULL;
+    int cond;
+
+    while (begin < end)
+    {
+        middle = begin + ((end - begin) >> 1);
+        if ((cond = strcmp(*middle, key)) == 0)
+            return true;
+        if (cond > 0) /* key < middle */
+            end = middle;
+        else
+            begin = middle + 1;
+    }
+
+    return false;
+}
 
 bool index_insert(struct index *idx, const char *key, const char *file, unsigned line)
 {
@@ -64,21 +140,21 @@ void index_print(struct index *idx, const char *key)
     struct hash_node *hnode = hash_get(&idx->hash, key);
     if (hnode)
     {
-        printf("\nResults for %s:\n", key);
+        printf("\n%s\n", key);
         struct location_node *locnode = hnode->loc_list;
         while (locnode)
         {
             /* TODO: use string formatting func here or in a to_string function */
-            printf("File: %s\n", locnode->filename);
-            printf("Lines: ");
-            for (size_t i = 0; i < locnode->size; ++i)
-                printf("%u ", locnode->lines[i]);
-            printf("\n---------------------\n");
+            printf("  %s: ", locnode->filename);
+            printf("%u", locnode->lines[0]);
+            for (size_t i = 1; i < locnode->size; ++i)
+                printf(", %u", locnode->lines[i]);
+            putchar(10);
             locnode = locnode->next;
         }
     }
     else
-        fprintf(stderr, "Error: %s is not in the index\n", key);
+        fprintf(stderr, "\nError: %s is not in the index\n", key);
 
 }
 
@@ -110,52 +186,58 @@ int main(int argc, char *argv[])
     argv += 2; /* first filename */
     argc -= 3; /* count - 1 of given filenames */
 
-    int count = 0;
-    printf("Creating the index...\n");
+    unsigned word_count = 0;
+    printf("\nCreating the index...\n");
     /* TODO: render bar for loading */
 
+    unsigned file_count = 0;
     while (argc >= 0)
     {
         FILE *infile = fopen(*argv, "r");
         /* TODO: error handling on file open */
-        if (!infile) {
+        if (!infile) 
+        {
             ++argv;
             --argc;
             continue;
         };
+        ++file_count;
 
-        unsigned line_count = 0;
         int c;
-
-
         while ((c = gettoken(s, MAXTOKEN, infile)) != EOF)
             /* TODO: NEED TO COUNT LINES */
         {
-            if (c == '\n')
-                ++line_count;
-            else if (isalpha(s[0]))
+            // if (isalpha(s[0]) && !is_stop(s))
+            if (isalpha(s[0]))
             {
-                if (index_insert(&my_index, s, *argv, line_count))
+                if (index_insert(&my_index, s, *argv, get_line_count()))
                 {
-                    /* TODO: delete this after timing stuff */
-                    ++count;
+                    ++word_count;
+                }
+                else
+                {
+                    // TODO:
+                    ;
                 }
             }
         }
 
         fclose(infile);
+        reset_line_count();
         ++argv;
         --argc;
     }
 
-    printf("num inserted = %d\n", count);
+    printf("\nIndexed %u distinct words across %u files\n", word_count, file_count);
+    printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 
     char input[100];
-    while (strcmp(input, "q") != 0)
+    while (true)
     {
-        printf("Enter a word to search for in the index: ");
+        printf("\n> ");
         scanf("%s", input);
-        printf("%s\n", input);
+        if (strcmp(input, "quit!") == 0)
+            break;
         index_print(&my_index, input);
     }
 

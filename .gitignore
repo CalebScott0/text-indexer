@@ -1,4 +1,8 @@
-notes.txt
+*.txt
+*.py
+D1*
+.DS_Store
+*.gz
 
 # Prerequisites
 *.d

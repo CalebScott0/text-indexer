@@ -7,7 +7,7 @@ DEV_CFLAGS =  \
 	 -fno-omit-frame-pointer \
 
 CFLAGS =  \
-		  -std=c11 -I. -O2
+		  -std=c11 -I. -O3
 
 INCLUDE = ./include
 SRC = ./src

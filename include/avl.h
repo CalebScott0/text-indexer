@@ -12,10 +12,9 @@
 
  /*TODO: fix up parameters and member var names, i.e. const? and pick a naming convention */
 struct tree_node {
+    uint8_t height;
     char *key;
     struct location_node *loc_list;  /* list of locations */
-
-    uint8_t height;
     struct tree_node *left;
     struct tree_node *right;
 };

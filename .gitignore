@@ -3,6 +3,7 @@
 D1*
 .DS_Store
 *.gz
+*.bak
 
 # Prerequisites
 *.d

@@ -2,14 +2,20 @@
 #include "../include/hash.h"
 
 enum dt_type { TREE, HASH };
+static size_t x = sizeof(dt_type);
 
 struct index {
     enum dt_type type;
     /* TODO: make the below not pointers?
      * and also just change the backend to be function pointers
      * not an enum! */
-    struct hashtab *hash;
-    struct tree *tree;
+    union {
+        struct hashtab hash;
+        struct tree tree;
+    } ctx;
+
+    size_t word_count; 
+    size_t file_count;
 };
 
 // 

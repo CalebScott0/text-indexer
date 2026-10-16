@@ -10,11 +10,6 @@
 
 #define MAX(A, B) ( (A) > (B)  ? (A) : (B) )
 
-/* TODO: 
- * - you really need to make this iterative instead of recursive
- *   - especially at any large number of inserts and when clearing the full tree,
- *    this is going to heavily inflate the runtime */
-
 struct tree create_tree()
 {
     struct tree ret = { .root = NULL };

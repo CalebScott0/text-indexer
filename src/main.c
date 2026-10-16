@@ -10,15 +10,10 @@
 
 #define MAXTOKEN 100
 
-/* TODO:
- *  - Don't forget list of exlcusion words,
- *  i.e. (stop words??) but whatever words are basic and not informant 
- *  - move index functionality to separate files? 
- *  --------------------------------
- *  for index wrapper functionality:
- *  if you use an enum/function pointers to distinguish the backend.
+/* TODO: if you use an enum/function pointers to distinguish the backend.
  */
 
+/* WARNING: This will slow down runtime when parsing input files when parsing input files */
 bool is_stop(const char *key)
 {
     static char *stop_list[] = {

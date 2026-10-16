@@ -23,12 +23,11 @@ struct tree {
     struct tree_node *root;
 };
 
-/* create_tree: initialize an empty tree 
- * TODO: other alternative is to create and pass by ptr for both this and hash*/
+/* create_tree: initialize an empty tree */
  struct tree create_tree();
 
 /* tree_insert: If the key does not exist in node's tree, insert a new node,
- *  else, append the 
+ *  else, append the location
  *  - tree:  a tree structure
  *  - key:   c-string key to insert
  *  - file:  name of the file key appears in

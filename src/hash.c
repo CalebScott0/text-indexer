@@ -40,6 +40,7 @@ bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsign
 
         return true;
     }
+
     /* key exists in table for all below */
     /* since we access files sequentially, last file added to locations list is most recent,
      * check if we have seen this key in this file before */

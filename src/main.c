@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/avl.h"
-#include "../include/hash.h"
 #include "../include/token.h"
 
 #define MAXTOKEN 100

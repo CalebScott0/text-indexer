@@ -6,22 +6,6 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-// #include "../include/index.h"
->>>>>>> Stashed changes
-=======
-// #include "../include/index.h"
->>>>>>> Stashed changes
-=======
-// #include "../include/index.h"
->>>>>>> Stashed changes
-=======
-// #include "../include/index.h"
->>>>>>> Stashed changes
 #include "../include/token.h"
 #include "../include/avl.h"
 

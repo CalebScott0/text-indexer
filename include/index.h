@@ -5,6 +5,9 @@ enum dt_type { TREE, HASH };
 
 struct index {
     enum dt_type type;
+    /* TODO: make the below not pointers?
+     * and also just change the backend to be function pointers
+     * not an enum! */
     struct hashtab *hash;
     struct tree *tree;
 };

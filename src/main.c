@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #include "../include/token.h"
-#include "../include/avl.h"
+#include "../include/index.h"
 
 #define MAXTOKEN 100
 

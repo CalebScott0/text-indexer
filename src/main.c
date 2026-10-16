@@ -17,8 +17,7 @@
  *  --------------------------------
  *  for index wrapper functionality:
  *  if you use an enum/function pointers to distinguish the backend.
- *
- *  */
+ */
 
 bool is_stop(const char *key)
 {
@@ -95,6 +94,68 @@ bool is_stop(const char *key)
     return false;
 }
 
+bool index_insert(struct index *idx, const char *key, const char *file, unsigned line)
+{
+    if (idx->type == TREE)
+        return tree_insert(idx->tree, key, file, line);
+
+
+    return hash_insert(idx->hash, key, file, line);
+}
+
+/* TODO: bool return and create_* function should handle error from memory allocation? */
+void index_init(struct index *idx)
+{
+    if (idx->type == TREE)
+        *idx->tree = create_tree();
+    else
+        *idx->hash = create_tab();
+}
+
+void index_clear(struct index *idx)
+{
+    if (idx->type == TREE)
+        tree_clear(idx->tree);
+    else
+        hash_clear(idx->hash);
+}
+
+/* TODO: this needs to be more modular,
+ * i.e. this should be in the src file of the data type,
+ * retrieve object of index type and return ? */
+void index_print(struct index *idx, const char *key)
+{
+    if (idx->type == TREE)
+        return; /* TODO: */
+
+    struct hash_node *hnode = hash_get(idx->hash, key);
+    if (hnode)
+    {
+        printf("\n%s\n", key);
+        struct location_node *locnode = hnode->loc_list;
+        while (locnode)
+        {
+            /* TODO: use string formatting func here or in a to_string function */
+            printf("  %s: ", locnode->filename);
+            printf("%u", locnode->lines[0]);
+            for (size_t i = 1; i < locnode->size; ++i)
+                printf(", %u", locnode->lines[i]);
+            putchar(10);
+            locnode = locnode->next;
+        }
+    }
+    else
+        fprintf(stderr, "\nError: %s is not in the index\n", key);
+}
+
+void print_tree(struct tree_node *node)
+{
+    if (!node) return;
+    printf("%s\n", node->key);
+    print_tree(node->left);
+    print_tree(node->right);
+}
+
 int main(int argc, char *argv[])
 {
     char s[MAXTOKEN];
@@ -113,7 +174,7 @@ int main(int argc, char *argv[])
 
     if (my_index.type == TREE)
     {
-        my_index.tree = create_tree();
+        //my_index.tree = create_tree();
     }
 
     argv += 2; /* first filename */
@@ -169,7 +230,6 @@ int main(int argc, char *argv[])
     }
 
     printf("\nIndexed %u distinct words across %u files\n", word_count, file_count);
-    return 600000000;
 
     printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 

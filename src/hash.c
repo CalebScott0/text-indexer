@@ -1,7 +1,7 @@
-#include "../include/hash.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "../include/hash.h"
 
 /* for now this is the hash function implemented in K&R */
 size_t hash(struct hashtab *htab, const char *key)

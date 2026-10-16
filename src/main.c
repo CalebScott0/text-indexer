@@ -4,16 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-<<<<<<< Updated upstream
-
-#include "../include/index.h"
-=======
 #include <stdbool.h>
 
-// #include "../include/index.h"
->>>>>>> Stashed changes
+#include "../include/index.h"
 #include "../include/token.h"
-#include "../include/avl.h"
 
 #define MAXTOKEN 100
 

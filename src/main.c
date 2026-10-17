@@ -132,7 +132,6 @@ int main(int argc, char *argv[])
         unsigned line_count = 1;
         int c;
         while ((c = gettoken(s, MAXTOKEN, infile)) != EOF)
-            /* TODO: NEED TO COUNT LINES */
         {
             if (c == '\n')
                 ++line_count;

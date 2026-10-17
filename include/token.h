@@ -14,4 +14,4 @@ static char *pbuf = buf;
 int gettoken(char *s, int lim, FILE *file);
 
 void ungetch(int c);
-char getch();
+char getch(FILE *file);

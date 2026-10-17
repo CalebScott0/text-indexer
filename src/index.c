@@ -3,8 +3,10 @@
 
 void init_index(struct index *idx, enum dt_type type)
 {
-    if (!idx || type != TREE || type != HASH)
+    if (idx == NULL || (type != TREE && type != HASH))
+    {
         return;
+    }
 
     idx->type = type;
     idx->file_count = 0;
@@ -60,21 +62,28 @@ void index_print(struct index *idx, const char *key)
 
     char buffer[1024];
     int cx = 0;
+    /* iterate through the loc_node list, printing filename and each line in that file per node */
     while (loc_node)
     {
-        cx += snprintf(buffer, 1024, "  %s: %u", loc_node->filename, loc_node->lines[0]);
+        /* add filename and first line to current spot in buffer */
+        cx += snprintf(buffer + cx, 1024 - cx, "  %s: %u", loc_node->filename, loc_node->lines[0]);
         for (size_t i = 1; i < loc_node->size; ++i)
         {
             if (cx >= 1024)
             {
+                /* TODO: fix below after making sure this is good! */
                 printf("ERROR!!!!! RAN OUT OF SPACE\n");
                 return;
             }
             else
             {
-                snprintf(buffer + cx, 1024 - cx, ", %u", loc_node->lines[i]);
+                /* append the remaining line numbers to the buffer */
+                cx += snprintf(buffer + cx, 1024 - cx, ", %u", loc_node->lines[i]);
             }
         }
+        printf("%s\n", buffer);
+        cx = 0; /* reset buffer for next file */
+
         loc_node = loc_node->next;
     }
 }

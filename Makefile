@@ -1,56 +1,78 @@
 CC = cc 
-CFLAGS =  \
-	 -Wall -Wextra -Wextra \
+DEV_CFLAGS =  \
+	 -Wall -Wextra \
 	 -Wno-strict-prototypes \
-	 -pedantic -std=c17 -I. -g \
-	 -fno-omit-frame-pointer \
+	 -pedantic -std=c11 -I. -g \
 	 -fsanitize=address,undefined \
+	 -fno-omit-frame-pointer \
+
+CFLAGS = -std=c11 -I. -O2
 
 INCLUDE = ./include
 SRC = ./src
 TESTS = ./tests
 
-# TODO: make usable with mac (fsanitize env vars and txt file?)
-# 	make variables for the .o targets to clean up the below? */
+# WARNING: Remember LeakSanitizer is not supported on this macOS? 
+
+#TODO: Run your unit tests with both sanitizers enabled, but disable
+# them for performance benchmarks because their instrumentation significantly affects execution time.
 
 utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h utils.o
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h utils.o
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
+
+index.o: $(SRC)/index.c $(INCLUDE)/index.h avl.o hash.o
+	$(CC) $(DEV_CFLAGS) -c $<
 
 token.o: $(SRC)/token.c $(INCLUDE)/token.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(DEV_CFLAGS) -c $<
 
 loc_test: $(TESTS)/location_tests.c utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_location: loc_test
 	./$<
 
 avl_test: $(TESTS)/avl_tests.c avl.o utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_avl: avl_test
 	./$<
 
 hash_test: $(TESTS)/hash_tests.c hash.o utils.o
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(DEV_CFLAGS) $^ -o $@
 
 test_hash: hash_test
 	./$<
 
-main: $(SRC)/main.c hash.o avl.o utils.o token.o
+main: $(SRC)/main.c hash.o avl.o utils.o token.o index.o
+	$(CC) $(DEV_CFLAGS) $^ -o $@
+
+perf_utils.o: $(SRC)/utils.c $(INCLUDE)/utils.h
+	$(CC) $(CFLAGS) -c $< -o perf_utils.o
+
+perf_avl.o: $(SRC)/avl.c $(INCLUDE)/avl.h perf_utils.o
+	$(CC) $(CFLAGS) -c $< -o perf_avl.o
+
+perf_hash.o: $(SRC)/hash.c $(INCLUDE)/hash.h perf_utils.o
+	$(CC) $(CFLAGS) -c $< -o perf_hash.o
+
+perf_index.o: $(SRC)/index.c $(INCLUDE)/index.h perf_avl.o perf_hash.o
+	$(CC) $(CFLAGS) -c $< -o perf_index.o
+
+perf_token.o: $(SRC)/token.c $(INCLUDE)/token.h
+	$(CC) $(CFLAGS) -c $< -o perf_token.o
+
+perf_main: $(SRC)/main.c perf_hash.o perf_avl.o perf_utils.o perf_token.o perf_index.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-run_main: main
-	./$<
-#
 clean:
-	rm -f *.o main *_test 
+	rm -f *.o main perf_main *_test 
 	rm -rf *.dSYM
 
 .PHONY: clean run_main test_avl test_location test_hash

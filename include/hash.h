@@ -12,14 +12,14 @@ struct hash_node {
     char *key;
     struct location_node *loc_list; /* list of locations key is found in */
 
-    struct hash_node *next; /* pointer to next node in chain */
+    struct hash_node *next;         /* pointer to next node in chain */
 };
 
 struct hashtab {
-    struct hash_node **table;    /* dynamic array of pointers to nodes */
+    struct hash_node **table;      /* dynamic array of pointers to nodes */
 
     size_t table_sz;
-    size_t table_cap;
+    size_t table_cap;             /* number of available buckets in the table */
 };
 
 /* initialize a hash table

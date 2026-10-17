@@ -1,11 +1,11 @@
-#include <stdio.h>
 #include <ctype.h>
 #include "../include/token.h"
 
-int gettoken(char *s, int lim)
+int gettoken(char *s, int lim, FILE *file)
 {
     int c;
-    while (isspace(c = getch()))
+    /* save newline for line count within files */
+    while ((c = getch(file)) == ' ' || c == '\t')
         ;
 
     /* TODO: do we only want alpha characters at the start ?
@@ -18,7 +18,7 @@ int gettoken(char *s, int lim)
     }
 
     /* allow apostrophes dashes in words, also allow underscores (great artist btw)?? */
-    for (*s++ = c; --lim > 0 && (isalpha(c = getch()) || c == '\'' || c == '-'); )
+    for (*s++ = c; --lim > 0 && (isalpha(c = getch(file)) || c == '\'' || c == '-'); )
         *s++ = c;
 
     ungetch(c);
@@ -34,8 +34,8 @@ void ungetch(int c)
         fprintf(stderr, "Error: ungetch() - bufffer full");
 }
 
-char getch()
+char getch(FILE *file)
 {
-    return pbuf != buf ? *--pbuf : getchar();
+    return pbuf != buf ? *--pbuf : getc(file);
 }
 

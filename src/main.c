@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 #include <stdbool.h>
 
@@ -156,7 +156,17 @@ int main(int argc, char *argv[])
         --argc;
     }
 
-    printf("\nIndexed %zu distinct words across %zu files\n", idx.word_count, idx.file_count);
+    printf("\nIndexed %zu distinct words across %zu files", idx.word_count, idx.file_count);
+    double time = (double) clock() / CLOCKS_PER_SEC;
+    if (time > 0.01)
+    {
+        printf("in %.2lf seconds.\n", time);
+    }
+    else 
+    {
+        printf(".\n"); 
+    }
+
 
     printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 

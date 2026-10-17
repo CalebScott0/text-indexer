@@ -1,7 +1,6 @@
 /* implementation of an AVL tree */
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

@@ -16,7 +16,7 @@ struct tree create_tree()
     return ret;
 }
 
-struct tree_node *avl_get(const struct tree *t, const char *key)
+struct tree_node *tree_get(const struct tree *t, const char *key)
 {
     struct tree_node *curr = t->root;
 

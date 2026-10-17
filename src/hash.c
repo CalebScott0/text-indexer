@@ -146,7 +146,7 @@ struct hash_node *create_hash_node()
     return node;
 }
 
-struct hashtab create_tab()
+struct hashtab create_hash()
 {
     struct hashtab ret;
     ret.table = (struct hash_node **) malloc(sizeof(struct hash_node *) * START_TAB_CAP);

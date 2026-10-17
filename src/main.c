@@ -90,68 +90,6 @@ bool is_stop(const char *key)
     return false;
 }
 
-bool index_insert(struct index *idx, const char *key, const char *file, unsigned line)
-{
-    if (idx->type == TREE)
-        return tree_insert(idx->tree, key, file, line);
-
-
-    return hash_insert(idx->hash, key, file, line);
-}
-
-/* TODO: bool return and create_* function should handle error from memory allocation? */
-void index_init(struct index *idx)
-{
-    if (idx->type == TREE)
-        *idx->tree = create_tree();
-    else
-        *idx->hash = create_tab();
-}
-
-void index_clear(struct index *idx)
-{
-    if (idx->type == TREE)
-        tree_clear(idx->tree);
-    else
-        hash_clear(idx->hash);
-}
-
-/* TODO: this needs to be more modular,
- * i.e. this should be in the src file of the data type,
- * retrieve object of index type and return ? */
-void index_print(struct index *idx, const char *key)
-{
-    if (idx->type == TREE)
-        return; /* TODO: */
-
-    struct hash_node *hnode = hash_get(idx->hash, key);
-    if (hnode)
-    {
-        printf("\n%s\n", key);
-        struct location_node *locnode = hnode->loc_list;
-        while (locnode)
-        {
-            /* TODO: use string formatting func here or in a to_string function */
-            printf("  %s: ", locnode->filename);
-            printf("%u", locnode->lines[0]);
-            for (size_t i = 1; i < locnode->size; ++i)
-                printf(", %u", locnode->lines[i]);
-            putchar(10);
-            locnode = locnode->next;
-        }
-    }
-    else
-        fprintf(stderr, "\nError: %s is not in the index\n", key);
-}
-
-void print_tree(struct tree_node *node)
-{
-    if (!node) return;
-    printf("%s\n", node->key);
-    print_tree(node->left);
-    print_tree(node->right);
-}
-
 int main(int argc, char *argv[])
 {
     char s[MAXTOKEN];
@@ -164,38 +102,32 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    struct index my_index = {
-        .type = (strcmp(argv[1], "tree") == 0) ? TREE : HASH,
-    };
-
-    if (my_index.type == TREE)
-    {
-        //my_index.tree = create_tree();
-    }
+    struct index idx;
+    init_index(&idx, (strcmp(argv[1], "tree") == 0) ? TREE : HASH);
 
     argv += 2; /* first filename */
     argc -= 3; /* count - 1 of given filenames */
 
-    unsigned word_count = 0;
     printf("\nCreating the index...\n");
     /* TODO: render bar for loading */
 
-    unsigned file_count = 0;
     while (argc >= 0)
     {
         /* TODO: use gprof to see how long you actually spend in the insert function of each data type,
          * to try and take out the file opening and closing time and all other noise */
 
         FILE *infile = fopen(*argv, "r");
+
         /* TODO: error handling on file open */
         if (!infile) 
         {
+            fprintf(stderr, "ERROR: unable to open %s\n", *argv);
             ++argv;
             --argc;
             continue;
         };
 
-        ++file_count;
+        ++idx.file_count;
 
         unsigned line_count = 1;
         int c;
@@ -208,15 +140,15 @@ int main(int argc, char *argv[])
             // if (isalpha(s[0]))
             if (isalpha(s[0]) && !is_stop(s))
             {
-                // if (index_insert(&my_index, s, *argv, line_count))
-                // {
-                    // ++word_count;
-                // }
-                // else
-                // {
-                    // // TODO:
+                if (index_insert(&idx, s, *argv, line_count))
+                {
+                     ++idx.word_count;
+                }
+                else
+                {
+                     // TODO:
                     // ;
-                // }
+                }
             }
         }
  
@@ -225,7 +157,7 @@ int main(int argc, char *argv[])
         --argc;
     }
 
-    printf("\nIndexed %u distinct words across %u files\n", word_count, file_count);
+    printf("\nIndexed %zu distinct words across %zu files\n", idx.word_count, idx.file_count);
 
     printf("\nSearch for a word in the index - use 'quit!' to exit.\n");
 
@@ -236,10 +168,10 @@ int main(int argc, char *argv[])
         scanf("%s", input);
         if (strcmp(input, "quit!") == 0)
             break;
-        //index_print(&my_index, input);
+        index_print(&idx, input);
     }
 
-    //index_clear(&my_index);
+    index_clear(&idx);
 
     return 0;
 }

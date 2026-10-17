@@ -25,7 +25,7 @@ struct hashtab {
 /* initialize a hash table
  * allocate the table member to starting capacity
  * returns a hashtab structure */
-struct hashtab create_tab();
+struct hashtab create_hash();
 
 /* TODO: ...... */
 bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsigned line);

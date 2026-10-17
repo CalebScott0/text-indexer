@@ -44,7 +44,7 @@ bool tree_insert(struct tree *t, const char *key, const char *file, unsigned lin
 
 /* avl_get: search for the node containing key,
  * return a pointer to the node if found, else NULL */
-struct tree_node *avl_get(const struct tree *t, const char *key);
+struct tree_node *tree_get(const struct tree *t, const char *key);
 
 /* free all allocated memory */
 void tree_clear(struct tree *t);

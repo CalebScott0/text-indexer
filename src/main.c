@@ -15,6 +15,7 @@
  */
 
 /* WARNING: This will slow down runtime when parsing input files when parsing input files */
+/* TODO: if you want, move this and the file functionality into indexer, with the is_stop and then a add_file function? */
 bool is_stop(const char *key)
 {
     static char *stop_list[] = {
@@ -174,6 +175,8 @@ int main(int argc, char *argv[])
     while (true)
     {
         printf("\n> ");
+        /* WARNING: remember tokenized words are all lowercase, change user input to match?  */
+        /* TODO: Validate input? */
         scanf("%s", input);
         if (strcmp(input, "quit!") == 0)
             break;

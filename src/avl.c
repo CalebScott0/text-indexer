@@ -15,6 +15,10 @@ struct tree create_tree()
     return ret;
 }
 
+/* TODO: make parameter and naming conventions consistent across files,
+ *  also comments on code sections that should have comments, 
+ *  and function/file header comments!! */
+
 struct tree_node *tree_get(const struct tree *t, const char *key)
 {
     struct tree_node *curr = t->root;

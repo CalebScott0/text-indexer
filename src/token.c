@@ -17,9 +17,9 @@ int gettoken(char *s, int lim, FILE *file)
         return c;
     }
 
-    /* allow apostrophes dashes in words, also allow underscores (great artist btw)?? */
-    for (*s++ = c; --lim > 0 && (isalpha(c = getch(file)) || c == '\'' || c == '-'); )
-        *s++ = c;
+    /* allow apostrophes and dashes in words, also allow underscores */
+    for (*s++ = tolower(c); --lim > 0 && (isalpha(c = getch(file)) || c == '\'' || c == '-'); )
+        *s++ = tolower(c);
 
     ungetch(c);
     *s = '\0';

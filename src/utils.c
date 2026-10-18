@@ -13,7 +13,7 @@ void push_back_line(struct location_node *node, unsigned value)
 
     if (*sz == *cap)   /* resize */
     {
-        /* TODO: error handling?, try out realloc! */
+        /* TODO: error handling?, try out realloc??! */
         unsigned *new_lines =
             (unsigned *) malloc(sizeof(unsigned) * (*cap << 1));
         for (size_t i = 0; i < *cap; ++i)

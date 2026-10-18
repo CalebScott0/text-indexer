@@ -1,6 +1,7 @@
 #include "../include/index.h"
 #include <stdio.h>
 
+/* TODO: bool return and create_* function should handle error from memory allocation */
 void init_index(struct index *idx, enum dt_type type)
 {
     if (idx == NULL || (type != TREE && type != HASH))
@@ -60,6 +61,8 @@ void index_print(struct index *idx, const char *key)
         return;
     }
 
+    /* WARNING: is the below ideal? */
+    /* TODO:  to_string functions in the src file of the data structs? */
     char buffer[1024];
     int cx = 0;
     /* iterate through the loc_node list, printing filename and each line in that file per node */

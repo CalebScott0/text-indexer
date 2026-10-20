@@ -52,7 +52,6 @@ struct hash_node *hash_get(struct hashtab *tab, const char *key);
  * returns pointer to allocated memory, or NULL if failure */
 struct hash_node *create_hash_node();
 
-#define LOAD_FACTOR 1.5
 /* resize: double hash table capacity if insert is equal or greater than the load factor */
 void hash_resize(struct hashtab *tab);
 

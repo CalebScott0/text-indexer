@@ -6,7 +6,6 @@ enum dt_type { TREE, HASH };
 struct index {
     enum dt_type type;
 
-    /* TODO:: also just change the backend to be function pointers */
     union {
         struct hashtab hash;
         struct tree tree;
@@ -16,6 +15,7 @@ struct index {
     size_t file_count;
 };
 
+/* init_index: Takes a pointer to a struct TODO: */
 void init_index(struct index *idx, enum dt_type type);
 
 bool index_insert(struct index *idx, const char *key,

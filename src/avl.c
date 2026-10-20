@@ -57,19 +57,11 @@ struct tree_node *__insert(struct tree_node *node,
         if (node)
         {
             *ins = true;
-            /* TODO: this might just be ptr assignment,
-             * if allocate during the tokenization */
             node->loc_list = create_loc(file, lineno);
             node->key = str_dup(key);
         }
         return node;
     }
-
-    /* TODO: to do iteratively, you would need probably a parent pointer
-     * to update the heights or bf of all ancestor nodes
-     * recursively, if balanced correctly, still runs in logn,
-     * 1,000,000 nodes is still only ~ 20 levels,
-     * and you can update all ancestor nodes on the backtrack */
 
     int cond;
     if ((cond = strcmp(key, node->key)) == 0)

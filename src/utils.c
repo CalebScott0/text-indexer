@@ -75,4 +75,3 @@ void clear_loc_list(struct location_node *node)
     free(prev->lines);
     free(prev);
 }
-

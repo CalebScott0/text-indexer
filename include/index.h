@@ -7,6 +7,7 @@ struct index {
     enum dt_type type;
 
     /* TODO:: also just change the backend to be function pointers */
+    /* OR use conditional compilation directives?? */
     union {
         struct hashtab hash;
         struct tree tree;

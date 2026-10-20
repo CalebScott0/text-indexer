@@ -15,6 +15,7 @@ size_t hash(struct hashtab *htab, const char *key)
     return hashval % htab->table_cap;
 }
 
+#define LOAD_FACTOR 1.5
 bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsigned line)
 {
     struct hash_node *pn;

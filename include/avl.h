@@ -9,17 +9,11 @@
 #include <stdbool.h>
 #include "utils.h"
 
-/* TODO: how to separate the payload from structure?
- * i.e. for tree and linked list, we track node, and separate payload to track data
- * TODO: fix up parameters and member var names, i.e. const? and pick a naming convention
- *  
- *  - Make into the other structure with just left / right, wrap those in a pay load...*/
+/* TODO: fix up parameters and member var names, i.e. const? and pick a naming convention */
 struct tree_node {
+    char height;
     char *key;
     struct location_node *loc_list;  /* list of locations */
-
-    int height;     /* PERF: make this a one bit field that stores balance
-                        factor instead ? */
     struct tree_node *left;
     struct tree_node *right;
 };
@@ -28,8 +22,7 @@ struct tree {
     struct tree_node *root;
 };
 
-/* create_tree: initialize an empty tree 
- * TODO: other alternative is to create and pass by ptr for both this and hash*/
+/* create_tree: initialize an empty tree */
  struct tree create_tree();
 
 /* tree_insert: If the key does not exist in node's tree, insert a new node,

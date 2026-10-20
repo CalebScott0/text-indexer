@@ -27,7 +27,7 @@ struct hashtab {
  * returns a hashtab structure */
 struct hashtab create_hash();
 
-/* TODO: ...... */
+/* TODO: change structure with memory error handling ...... */
 /* Returns true if a new key was inserted,
  * false if an existing key was updated. */
 bool hash_insert(struct hashtab *htab, const char *key, const char *file, unsigned line);

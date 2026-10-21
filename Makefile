@@ -12,7 +12,7 @@ INCLUDE = ./include
 SRC     = ./src
 TESTS   = ./tests
 
-# WARNING: Remember LeakSanitizer is not supported on this macOS? 
+#WARNING: Remember LeakSanitizer is not supported on this macOS? 
 
 #TODO: Run your unit tests with both sanitizers enabled, but disable
 # them for performance benchmarks because their instrumentation significantly affects execution time.

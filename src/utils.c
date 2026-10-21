@@ -1,7 +1,25 @@
-#include "stdlib.h"
-#include "string.h"
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <err.h>
 
 #include "../include/utils.h"
+
+/* We need some way to differentiate between a bad alloc,
+ * and 'no-insert' where the key already exists, but we append
+ * a new filename and/or line number */
+/* TODO: fucking implode idek anymore */
+// enum NEW_CODES {
+    // BAD_ALLOC = -1,
+    // OK        = 0,
+    // NO_INSERT = 1,
+// };
+
+/* Attempt to allocate memory of size n */
+void *xalloc(size_t n)
+{
+    return malloc (n);
+}
 
 void push_back_line(struct location_node *node, unsigned value)
 {
@@ -13,9 +31,13 @@ void push_back_line(struct location_node *node, unsigned value)
 
     if (*sz == *cap)   /* resize */
     {
-        /* TODO: error handling?, try out realloc??! */
-        unsigned *new_lines =
-            (unsigned *) malloc(sizeof(unsigned) * (*cap << 1));
+        /* TODO: error handling?, try out realloc!! */
+        unsigned *new_lines = xalloc(sizeof(unsigned) * (*cap << 1));
+        if (!new_lines)
+        {
+            err(EXIT_FAILURE, "Unable to resize location node - push_back_line()");
+        }
+
         for (size_t i = 0; i < *cap; ++i)
             new_lines[i] = plines[i];
 
@@ -40,8 +62,7 @@ char *str_dup(const char *__s)
 
 struct location_node *create_loc(const char *file, unsigned lineno)
 {
-    struct location_node *node =
-        (struct location_node *) malloc(sizeof(struct location_node));
+    struct location_node *node = xalloc (sizeof(struct location_node));
     if (node)
     {
         node->filename = str_dup(file);

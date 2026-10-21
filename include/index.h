@@ -4,8 +4,6 @@
 enum dt_type { TREE, HASH };
 
 struct index {
-    enum dt_type type;
-
     union {
         struct hashtab hash;
         struct tree tree;
@@ -13,6 +11,8 @@ struct index {
 
     size_t word_count; 
     size_t file_count;
+
+    enum dt_type type;
 };
 
 /* init_index: Takes a pointer to a struct TODO: */

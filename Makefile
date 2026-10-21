@@ -6,11 +6,11 @@ DEV_CFLAGS =  \
 	 -fsanitize=address,undefined \
 	 -fno-omit-frame-pointer \
 
-CFLAGS = -std=c11 -I. -O2
+CFLAGS  = -std=c11 -I. -O2
 
 INCLUDE = ./include
-SRC = ./src
-TESTS = ./tests
+SRC     = ./src
+TESTS   = ./tests
 
 # WARNING: Remember LeakSanitizer is not supported on this macOS? 
 

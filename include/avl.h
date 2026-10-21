@@ -11,11 +11,14 @@
 
 /* TODO: fix up parameters and member var names, i.e. const? and pick a naming convention */
 struct tree_node {
-    char height;
     char *key;
+
     struct location_node *loc_list;  /* list of locations */
+
     struct tree_node *left;
     struct tree_node *right;
+
+    char height;
 };
 
 struct tree {

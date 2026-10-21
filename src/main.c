@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     double time = (double) clock() / CLOCKS_PER_SEC;
     if (time > 0.01)
     {
-        printf("in %.2lf seconds.\n", time);
+        printf(" in %.2lf seconds.\n", time);
     }
     else 
     {
